@@ -7,7 +7,8 @@
                  [ring/ring-core "1.3.2"]
                  [ring/ring-json "0.3.1"]
                  [ring/ring-defaults "0.1.4"]
-                 [org.clojure/clojurescript "0.0-2069"]]
+                 [org.clojure/clojurescript "0.0-2069"]
+                 [domina "1.0.3"]]
   :plugins [[lein-ring "0.8.13"] [lein-cljsbuild "1.0.0"]]
   :source-paths ["src/clj" "src/cljs"]
   :ring {:handler logging-dashboard.handler/app}
