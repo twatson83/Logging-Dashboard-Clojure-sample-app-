@@ -1,0 +1,1 @@
+gnome-terminal --tab "autobuild cljs" -e "bash -c \"lein cljsbuild auto; exec bash\"" --tab "emacs" -e "bash -c \"emacs project.clj; exec bash\"" --tab "server" -e "bash -c \"lein ring server; exec bash\"" --tab "cljs repl" -e "bash -c \"lein trampoline cljsbuild repl-listen; exec bash\""
