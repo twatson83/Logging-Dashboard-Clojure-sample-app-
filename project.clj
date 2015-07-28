@@ -2,18 +2,24 @@
   :description "FIXME: write description"
   :url "http://example.com/FIXME"
   :min-lein-version "2.0.0"
-  :dependencies [[org.clojure/clojure "1.7.0-alpha5"]
+  :main "logging-dashboard.server"
+  :dependencies [[org.clojure/clojure "1.6.0"]
+                 [org.clojure/tools.reader "0.10.0-alpha1"]
+                 [org.clojure/clojurescript "0.0-2411" :exclusions [org.apache.ant/ant]]
                  [compojure "1.3.2"]
                  [ring/ring-core "1.3.2"]
                  [ring/ring-json "0.3.1"]
                  [ring/ring-defaults "0.1.4"]
                  [clojurewerkz/elastisch "2.1.0"]
-                 [org.clojure/clojurescript "0.0-2069"]
-                 [secretary "1.2.3"]
-                 [cljs-ajax "0.3.13"]
-                 [reagent "0.5.0"]]
+                 ;[secretary "1.2.3"]
+                 [http-kit "2.1.18"]
+                 [com.taoensso/timbre "4.0.2"]
+                 [com.taoensso/sente "1.5.0"]
+                 ;[cljs-ajax "0.3.13"]
+                 ;[reagent "0.5.0"]
+                 ]
   :plugins [[lein-ring "0.8.13"]
-            [lein-cljsbuild "1.0.0"]
+            [lein-cljsbuild "1.0.6"]
             [cider/cider-nrepl "0.8.1"]]
   :source-paths ["src/clj" "src/cljs"]
   :ring {:handler logging-dashboard.handler/app}
@@ -23,6 +29,8 @@
 
   :cljsbuild {:builds
               [{:source-paths ["src/cljs"]
-                :compiler {:output-to "resources/public/js/logging-dashboard.js"
+                :compiler {:output-dir "resources/public/js"
+                           :output-to  "resources/public/js/logging-dashboard.js"
+                           :source-map "resources/public/js/logging-dashboard.js.map"
                            :optimizations :whitespace
                            :pretty-print true}}]})
