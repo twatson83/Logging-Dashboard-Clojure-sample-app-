@@ -8,9 +8,10 @@
 
 (debugf "ClojureScript appears to have loaded correctly.")
 
-(let [{:keys [chsk ch-recv send-fn state]}
+(let [rand-chsk-type (if (>= (rand) 0.5) :ajax :auto)
+      {:keys [chsk ch-recv send-fn state]}
       (sente/make-channel-socket! "/chsk" 
-       {:type :auto })]
+      {:type   rand-chsk-type})]
   (def chsk       chsk)
   (def ch-chsk    ch-recv) 
   (def chsk-send! send-fn) 
@@ -18,7 +19,7 @@
 
 (defmulti event-msg-handler :id)
 
-(defn  event-msg-handler* [{:as ev-msg :keys [id ?data event]}]
+(defn event-msg-handler* [{:as ev-msg :keys [id ?data event]}]
   (debugf "Event: %s" event)
   (event-msg-handler ev-msg))
 
@@ -26,21 +27,9 @@
   [{:as ev-msg :keys [event]}]
   (debugf "Unhandled event: %s" event))
       
-(defmethod event-msg-handler :chsk/state
+(defmethod event-msg-handler :some/broadcast
   [{:as ev-msg :keys [?data]}]
-  (if (= ?data {:first-open? true})
-    (debugf "Channel socket successfully established!")
-    (debugf "Channel socket state change: %s" ?data)))
-      
-(defmethod event-msg-handler :chsk/recv
-  [{:as ev-msg :keys [?data]}]
-  (debugf "Push event from server: %s" ?data))
-      
-(defmethod event-msg-handler :chsk/handshake
-  [{:as ev-msg :keys [?data]}]
-  (let [[?uid ?csrf-token ?handshake-data] ?data]
-    (debugf "Handshake: %s" ?data)))
-      
+  (debugf "Broadcast: %s" ?data))
 
 (when-let [target-el (.getElementById js/document "btn1")]
   (.addEventListener target-el "click"
@@ -52,3 +41,15 @@
                         (fn [cb-reply] 
                           (debugf "Reply - %s" cb-reply))))))
 
+(def router_ (atom nil))
+
+(defn stop-router! [] (when-let [stop-f @router_] (stop-f)))
+
+(defn start-router! []
+  (stop-router!)
+  (reset! router_ (sente/start-chsk-router! ch-chsk event-msg-handler*)))
+
+(defn start! []
+  (start-router!))
+ 
+(start!)
