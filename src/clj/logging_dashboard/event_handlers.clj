@@ -1,6 +1,7 @@
 (ns logging-dashboard.event-handlers
   (:require [clojure.core.async        :as async :refer [<! <!! chan go thread go-loop]]
             [taoensso.sente            :as sente]
+            [logging-dashboard.logs    :as logs]
             [taoensso.timbre           :as timbre :refer (tracef debugf infof warnf errorf)]
             [taoensso.sente.server-adapters.http-kit :refer (sente-web-server-adapter)]))
 
@@ -47,11 +48,7 @@
     (when ?reply-fn
       (?reply-fn {:umatched-event-as-echoed-from-server event}))))
 
-(defmethod event-msg-handler :test/echo
+(defmethod event-msg-handler :logs/search
   [{:as ev-msg :keys [event id ?data ring-req ?reply-fn send-fn]}]
-  (let [session (:session ring-req)
-        uid     (:uid     session)]
-    (infof "Echo: Data - %s, Uid - %s, Session - %s" ?data uid session)
-    (when ?reply-fn
-      (?reply-fn {:test-reply "Test data"}))))
+    (?reply-fn (logs/search ?data)))
 

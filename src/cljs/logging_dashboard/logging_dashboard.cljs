@@ -36,7 +36,10 @@
                      (fn [ev]
                        (debugf "Triggering event")
                        (chsk-send! 
-                        [:test/echo {:message "1234"}] 
+                        [:logs/search {:query  {:match_all {}} 
+                                       :sort   {:level "asc"} 
+                                       :from   0 
+                                       :size   100}] 
                         10000
                         (fn [cb-reply] 
                           (debugf "Reply - %s" cb-reply))))))

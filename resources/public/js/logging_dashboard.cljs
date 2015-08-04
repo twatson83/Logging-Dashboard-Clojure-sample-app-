@@ -19,7 +19,7 @@
 
 (defmulti event-msg-handler :id)
 
-(defn  event-msg-handler* [{:as ev-msg :keys [id ?data event]}]
+(defn event-msg-handler* [{:as ev-msg :keys [id ?data event]}]
   (debugf "Event: %s" event)
   (event-msg-handler ev-msg))
 
@@ -36,28 +36,21 @@
                      (fn [ev]
                        (debugf "Triggering event")
                        (chsk-send! 
-                        [:test/echo {:message "1234"}] 
+                        [:logs/search {:query  {:match_all {}} 
+                                       :sort   {:level "asc"} 
+                                       :from   0 
+                                       :size   100}] 
                         10000
                         (fn [cb-reply] 
                           (debugf "Reply - %s" cb-reply))))))
 
-;(defn event-loop
-;  "Handle inbound events."
-;  []
-;(go (loop [[op arg] (:event (<! ch-chsk))]
-;      #_(debugf "- %s" op)
-;      (event-msg-handler op arg))
-;    (recur (:event (<! ch-chsk)))))
-
-;(event-loop)
-
-
 (def router_ (atom nil))
-(defn  stop-router! [] (when-let [stop-f @router_] (stop-f)))
+
+(defn stop-router! [] (when-let [stop-f @router_] (stop-f)))
+
 (defn start-router! []
   (stop-router!)
   (reset! router_ (sente/start-chsk-router! ch-chsk event-msg-handler*)))
-
 
 (defn start! []
   (start-router!))
