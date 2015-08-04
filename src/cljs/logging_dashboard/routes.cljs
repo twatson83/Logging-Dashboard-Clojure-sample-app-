@@ -3,35 +3,26 @@
    [secretary.core :refer [defroute]])
   (:require [goog.events :as events]
             [goog.history.EventType :as EventType]
-            [secretary.core :as secretary])
+            [secretary.core :as secretary]
+            [logging-dashboard.components.header :refer [render-header]]
+            [logging-dashboard.components.errors :refer [render-404]]
+            )
   (:import goog.History))
 
-(def application
-  (js/document.getElementById "application"))
-
-(defn set-html! [el content]
-  (aset el "innerHTML" content))
-
-(secretary/set-config! :prefix "#")
+(render-header)
 
 (defroute home-path "/" []
-  (set-html! application "<h1>OMG! YOU'RE HOME!</h1>"))
+  (render-404))
 
-(defroute users-path "/users" []
-  (set-html! application "<h1>USERS!</h1>"))
-
-(defroute user-path "/users/:id" [id]
-  (let [message (str "<h1>HELLO USER <small>" id "</small>!</h1>")]
-    (set-html! application message)))
-
-(defroute jackpot-path "/777" []
-  (set-html! application "<h1>YOU HIT THE JACKPOT!</h1>"))
+(defroute log-path "/logs/:id" [id]
+  (render-404))
 
 (defroute "*" []
-  (set-html! application "<h1>LOL! YOU LOST!</h1>"))
+  (render-404))
 
 (defn init []
   (let [h (History.)]
+    (secretary/set-config! :prefix "#")
     (goog.events/listen h EventType/NAVIGATE #(secretary/dispatch! (.-token %)))
     (doto h (.setEnabled true))))
 
