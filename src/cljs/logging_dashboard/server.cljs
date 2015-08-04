@@ -1,12 +1,11 @@
-(ns logging-dashboard
+(ns logging-dashboard.server
   (:require-macros
-   [cljs.core.async.macros :as asyncm :refer (go go-loop)])
+   [cljs.core.async.macros   :as asyncm :refer (go go-loop)])
   (:require
-   [cljs.core.async :as async :refer (<! >! put! chan)]
-   [taoensso.encore :as enc   :refer (tracef debugf infof warnf errorf)]
-   [taoensso.sente  :as sente :refer (cb-success?)]))
-
-(debugf "ClojureScript appears to have loaded correctly.")
+   [cljs.core.async          :as async  :refer (<! >! put! chan)]
+   [taoensso.encore          :as enc    :refer (tracef debugf infof warnf errorf)]
+   [logging-dashboard.routes :as routes :refer (init)]
+   [taoensso.sente           :as sente  :refer (cb-success?)]))
 
 (let [rand-chsk-type (if (>= (rand) 0.5) :ajax :auto)
       {:keys [chsk ch-recv send-fn state]}
@@ -43,13 +42,8 @@
 
 (def router_ (atom nil))
 
-(defn stop-router! [] (when-let [stop-f @router_] (stop-f)))
+(defn stop-server-router! [] (when-let [stop-f @router_] (stop-f)))
 
-(defn start-router! []
-  (stop-router!)
+(defn start-server-router! []
+  (stop-server-router!)
   (reset! router_ (sente/start-chsk-router! ch-chsk event-msg-handler*)))
-
-(defn start! []
-  (start-router!))
- 
-(start!)

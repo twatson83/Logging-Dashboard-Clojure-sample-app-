@@ -1,65 +1,16 @@
+
 (ns logging-dashboard
-  (:require-macros
-   [cljs.core.async.macros :as asyncm :refer (go go-loop)])
   (:require
-   [cljs.core.async :as async :refer (<! >! put! chan)]
-   [taoensso.encore :as enc   :refer (tracef debugf infof warnf errorf)]
-   [taoensso.sente  :as sente :refer (cb-success?)]))
+   [taoensso.encore          :as enc    :refer (tracef debugf infof warnf errorf)]
+   [logging-dashboard.routes :as routes :refer (init)]
+   [logging-dashboard.server :as server :refer (start-server-router!)]))
 
-(debugf "ClojureScript appears to have loaded correctly.")
-
-(let [rand-chsk-type (if (>= (rand) 0.5) :ajax :auto)
-      {:keys [chsk ch-recv send-fn state]}
-      (sente/make-channel-socket! "/chsk" 
-      {:type   rand-chsk-type})]
-  (def chsk       chsk)
-  (def ch-chsk    ch-recv) 
-  (def chsk-send! send-fn) 
-  (def chsk-state state))
-
-(defmulti event-msg-handler :id)
-
-(defn  event-msg-handler* [{:as ev-msg :keys [id ?data event]}]
-  (debugf "Event: %s" event)
-  (event-msg-handler ev-msg))
-
-(defmethod event-msg-handler :default 
-  [{:as ev-msg :keys [event]}]
-  (debugf "Unhandled event: %s" event))
-      
-(defmethod event-msg-handler :some/broadcast
-  [{:as ev-msg :keys [?data]}]
-  (debugf "Broadcast: %s" ?data))
-
-(when-let [target-el (.getElementById js/document "btn1")]
-  (.addEventListener target-el "click"
-                     (fn [ev]
-                       (debugf "Triggering event")
-                       (chsk-send! 
-                        [:test/echo {:message "1234"}] 
-                        10000
-                        (fn [cb-reply] 
-                          (debugf "Reply - %s" cb-reply))))))
-
-;(defn event-loop
-;  "Handle inbound events."
-;  []
-;(go (loop [[op arg] (:event (<! ch-chsk))]
-;      #_(debugf "- %s" op)
-;      (event-msg-handler op arg))
-;    (recur (:event (<! ch-chsk)))))
-
-;(event-loop)
-
-
-(def router_ (atom nil))
-(defn  stop-router! [] (when-let [stop-f @router_] (stop-f)))
-(defn start-router! []
-  (stop-router!)
-  (reset! router_ (sente/start-chsk-router! ch-chsk event-msg-handler*)))
-
+(debugf "ClojureScript loaded correctly.")
 
 (defn start! []
-  (start-router!))
+  (do 
+    (server/start-server-router!)
+    (routes/init)
+    (debugf "Started App.")))
  
 (start!)
