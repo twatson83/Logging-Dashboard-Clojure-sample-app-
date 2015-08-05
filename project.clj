@@ -19,13 +19,15 @@
                  ]
   :plugins [[lein-ring "0.8.13"]
             [lein-cljsbuild "1.0.6"]
-            [cider/cider-nrepl "0.8.1"]]
+            [lein-bower "0.5.1"]
+            [cider/cider-nrepl "0.8.1"]
+            [lein-npm "0.6.1"]]
   :source-paths ["src/clj" "src/cljs"]
   :ring {:handler logging-dashboard.handler/app}
   :profiles
   {:dev {:dependencies [[javax.servlet/servlet-api "2.5"]
                         [ring-mock "0.1.5"]]}}
-
+  
   :cljsbuild {:builds
               [{:source-paths ["src/cljs"]
                 :compiler {:output-dir "resources/public/js"
@@ -34,3 +36,4 @@
                            :closure-warnings {:non-standard-jsdoc :off}
                            :optimizations :whitespace
                            :pretty-print true}}]})
+

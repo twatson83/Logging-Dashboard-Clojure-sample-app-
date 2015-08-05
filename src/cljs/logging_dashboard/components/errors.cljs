@@ -4,7 +4,3 @@
 (defn page-not-found []
   [:div.header
    [:p "Page not found!" ]])
-
-(defn render-404 []
-  (reagent/render-component [page-not-found] (.-body js/document)))
-
