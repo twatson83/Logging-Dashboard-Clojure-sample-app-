@@ -1,2 +1,18 @@
 body { padding-top: 70px; }
 .log-pager { width: 240px; margin: 0 auto; }
+.log-table {
+    font-size: 11px;
+}
+.timestamp {
+    min-width: 150px;
+}
+.message {
+    max-width: 500px;
+}
+.exception{
+    max-width: 500px;
+}
+
+.log-table td {
+    overflow: auto;
+}

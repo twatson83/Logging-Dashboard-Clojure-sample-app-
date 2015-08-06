@@ -23,8 +23,7 @@
                   :size   100}] 
    10000
    (fn [cb-reply] 
-     (do (debugf "Reply - %s" cb-reply)
-       (reagent/render-component [log-table cb-reply] (.getElementById js/document "content"))))))
+     (reagent/render-component [log-table cb-reply] (.getElementById js/document "content")))))
 
 (defroute log-path "/logs/:id" [id]
   (render page-not-found "content"))
