@@ -8,8 +8,10 @@
 
 (defn start! []
   (do 
+    (debugf "Starting server router")
     (server/start-server-router!)
-    (routes/init)
     (debugf "Started App.")))
  
 (start!)
+
+

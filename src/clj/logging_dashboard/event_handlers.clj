@@ -27,7 +27,7 @@
 
 (defn start-broadcaster! []
     (go-loop [i 0]
-      (<! (async/timeout 10000))
+      (<! (async/timeout 120000))
       (debugf (format "Broadcasting server>user: %s" @connected-uids))
       (doseq [uid (:any @connected-uids)]
         (chsk-send! uid
@@ -50,5 +50,10 @@
 
 (defmethod event-msg-handler :logs/search
   [{:as ev-msg :keys [event id ?data ring-req ?reply-fn send-fn]}]
-    (?reply-fn (logs/search ?data)))
+  (do
+    (debugf "Fetching logs")
+    (?reply-fn (logs/search :query (get ?data :query) 
+                            :from  (get ?data :from)
+                            :size  (get ?data :size)
+                            :sort  (get ?data :sort)))))
 

@@ -1,15 +1,13 @@
 (ns logging-dashboard.routes
   (:require-macros
    [secretary.core :refer [defroute]])
-  (:require [goog.events :as events]
-            [goog.history.EventType :as EventType]
-            [secretary.core :as secretary]
+  (:require [secretary.core :as secretary]
+            [logging-dashboard.server :as server :refer (chsk-send!)]
             [logging-dashboard.components.header    :refer [header]]
             [logging-dashboard.components.log-table :refer [log-table]]
             [logging-dashboard.components.errors    :refer [page-not-found]]
-            [reagent.core :as reagent]
-            )
-  (:import goog.History))
+            [taoensso.encore          :as enc    :refer (tracef debugf infof warnf errorf)]
+            [reagent.core :as reagent]))
 
 (defn render 
   [component id]
@@ -18,17 +16,18 @@
 (render header "header")
 
 (defroute home-path "/" []
-  (render log-table "content"))
+  (server/chsk-send! 
+   [:logs/search {:query  {:match_all {}} 
+                  :sort   {:timestamp "desc"} 
+                  :from   0 
+                  :size   100}] 
+   10000
+   (fn [cb-reply] 
+     (do (debugf "Reply - %s" cb-reply)
+       (reagent/render-component [log-table cb-reply] (.getElementById js/document "content"))))))
 
 (defroute log-path "/logs/:id" [id]
   (render page-not-found "content"))
 
 (defroute "*" []
   (render page-not-found "content"))
-
-(defn init []
-  (let [h (History.)]
-    (secretary/set-config! :prefix "#")
-    (goog.events/listen h EventType/NAVIGATE #(secretary/dispatch! (.-token %)))
-    (doto h (.setEnabled true))))
-

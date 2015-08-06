@@ -12,9 +12,9 @@ goog.require('taoensso.encore');
 goog.require('taoensso.encore');
 taoensso.encore.debugf.call(null,"ClojureScript loaded correctly.");
 logging_dashboard.main.start_BANG_ = (function start_BANG_(){
-logging_dashboard.server.start_server_router_BANG_.call(null);
+taoensso.encore.debugf.call(null,"Starting server router");
 
-logging_dashboard.routes.init.call(null);
+logging_dashboard.server.start_server_router_BANG_.call(null);
 
 return taoensso.encore.debugf.call(null,"Started App.");
 });

@@ -4,7 +4,7 @@
 (defn filter []
   [:div.log-filter])
 
-(defn table []
+(defn table [logs]
   [:table.table.table-bordered.table-hover.table-condensed
    [:tr
     [:th "Timestamp"]
@@ -14,6 +14,15 @@
     [:th "Service"]
     [:th "Exception"]
     ]
+   (for [log (get logs :hits)]
+     ^{:key log} [:tr
+                  [:td (get log :timestamp)]
+                  [:td (get log :level)]
+                  [:td (get log :message)]
+                  [:td (get log :application)]
+                  [:td (get log :service)]
+                  [:td (get log :exception)]
+                  ])
    ])
 
 (defn pager []
@@ -29,11 +38,11 @@
     ]
    ])
 
-(defn log-table []
+(defn log-table [logs]
   [:div.log-table
    [:div.container-fluid
     [filter]
-    [table]
+    [table logs]
     [pager]]
     ]
    )

@@ -7,23 +7,23 @@
             [clojure.pprint :as pp]))
 
 (def conn 
-  (esr/connect "http://127.0.0.1:9200" {:conn-timeout 5000}))
+  (esr/connect "http://ruffer-bpwfs-d:9200" {:conn-timeout 5000}))
 
 (defn search 
   [& {:as params}]
-  (let [res  (apply esd/search conn "log" "log" (apply concat params))
+  (let [res  (apply esd/search conn "logs" "log" (apply concat params))
         hits (into [] (map #(get % :_source) (esrsp/hits-from res)))
         n    (esrsp/total-hits res)]
     {:number n :hits hits}))
 
 (defn create-index
   []
-  (esi/create conn "log" { "log" { :properties {:level   {:type "string" :store "yes" }
+  (esi/create conn "logs" { "log" { :properties {:level   {:type "string" :store "yes" }
                                                 :message {:type "string" :analyzer "snowball" }}}}))
 
 (defn insert
   [doc]
-  (esd/create conn "log" "log" doc))
+  (esd/create conn "logs" "log" doc))
 
 
 (defn setup-tests
