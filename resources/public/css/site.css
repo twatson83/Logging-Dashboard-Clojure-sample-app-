@@ -16,3 +16,11 @@ body { padding-top: 70px; }
 .log-table td {
     overflow: auto;
 }
+
+.dropdown-menu .checkbox{
+    padding-left: 5px;
+}
+
+.log-filter{
+    padding-bottom: 10px;
+}
