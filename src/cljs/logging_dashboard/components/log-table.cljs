@@ -29,31 +29,38 @@
     ]
    ])
 
-(defn table [logs]
-  [:table.table.table-bordered.table-hover.table-condensed
-   [:tr
-    [:th.timestamp   [:a {:href "#"} "Timestamp"]]
-    [:th.level       [:a {:href "#"} "Level"]]
-    [:th.message     [:a {:href "#"} "Message"]]
-    [:th.application [:a {:href "#"} "Application"]]
-    [:th.service     [:a {:href "#"} "Service"]]
-    [:th.exception   [:a {:href "#"} "Exception"]]
-    ]
-   (for [log (get logs :hits)]
-     (let [{:keys [timestamp level message application service exceptionJson]} log
-           class (cond
-                  (= level "ERROR") "danger"
-                  (= level "Error") "danger"
-                  :else "")]
-       [:tr {:class class}
-        [:td.timestamp   (datetime/format :MEDIUM_DATETIME timestamp)]
-        [:td.level       level]
-        [:td.message     message]
-        [:td.application application]
-        [:td.service     service]
-        [:td.exception   exceptionJson]
-        ]))
-   ])
+(defn table-header 
+  [{:keys [name label]} column]
+    [:th [:a {:href "#" :class name} label]])
+
+(defn table [logs config]
+  (let [columns (:columns config)]
+    [:table.table.table-bordered.table-hover.table-condensed
+     [:tr
+      (for [column columns]
+        [table-header column])
+      ]
+     (for [log (get logs :hits)]
+       (let [{:keys [timestamp level message application service exceptionJson]} log
+             class (cond
+                    (or (= level "ERROR") (= level "Error")) "danger"
+                    (or (= level "WARN") (= level "Warn")) "warning"
+                    :else "")]
+         [:tr {:class class}
+          (if (:visible (:timestamp columns))
+            [:td.timestamp   (datetime/format :MEDIUM_DATETIME timestamp)]) 
+          (if (:visible (:level columns))
+            [:td.level level]) 
+          (if (:visible (:message columns))
+            [:td.message message]) 
+          (if (:visible (:application columns))
+            [:td.application application]) 
+          (if (:visible (:service columns))
+            [:td.service service]) 
+          (if (:visible (:exceptionJson columns))
+            [:td.exceptionJson exceptionJson]) 
+          ]))
+     ]))
 
 (defn pager []
   [:nav.log-pager
@@ -67,6 +74,6 @@
   [:div.log-table
    [:div.container-fluid
     [filter config]
-    [table logs]
+    [table logs config]
     [pager]]
     ])

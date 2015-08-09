@@ -16,6 +16,7 @@
                  [com.taoensso/timbre "4.0.2"]
                  [com.taoensso/sente "1.5.0"]
                  [reagent "0.5.0"]
+                 [alandipert/storage-atom "1.2.4"]
                  ]
   :plugins [[lein-ring "0.8.13"]
             [lein-cljsbuild "1.0.6"]

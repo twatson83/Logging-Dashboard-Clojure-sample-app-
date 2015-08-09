@@ -7,7 +7,7 @@
             [clojure.pprint :as pp]))
 
 (def conn 
-  (esr/connect "http://ruffer-bpwfs-d:9200" {:conn-timeout 5000}))
+  (esr/connect "http://localhost:9200" {:conn-timeout 5000}))
 
 (defn search 
   [& {:as params}]

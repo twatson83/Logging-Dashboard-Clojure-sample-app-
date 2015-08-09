@@ -7,11 +7,28 @@
             [logging-dashboard.components.log-table :refer [log-table]]
             [logging-dashboard.components.errors    :refer [page-not-found]]
             [taoensso.encore          :as enc    :refer (tracef debugf infof warnf errorf)]
+            [alandipert.storage-atom :refer [local-storage]]
             [reagent.core :as reagent]))
 
 (defn render 
   [component id]
   (reagent/render-component [component] (.getElementById js/document id)))
+
+(def default-config
+  {:columns {
+             :timestamp     {:label "Timestamp" :visible true}
+             :level         {:label "Level" :visible true}
+             :message       {:label "Message" :visible true}
+             :application   {:label "Application" :visible true}
+             :service       {:label "Service" :visible true}
+             :exceptionJson {:label "Exception" :visible true}
+             }})
+
+(defn get-config []
+  (let [config (local-storage (atom {}) :config)]
+    (if (= @config nil)
+      (default-config)
+      @config)))
 
 (render header "header")
 
@@ -23,7 +40,9 @@
                   :size   100}] 
    10000
    (fn [cb-reply] 
-     (reagent/render-component [log-table cb-reply] (.getElementById js/document "content")))))
+     (let [content (.getElementById js/document "content")
+           config  (get-config)]
+       (reagent/render-component [log-table cb-reply config] content)))))
 
 (defroute log-path "/logs/:id" [id]
   (render page-not-found "content"))
