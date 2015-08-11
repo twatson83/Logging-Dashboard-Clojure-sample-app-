@@ -28,8 +28,8 @@
 
 (defn setup-tests
   []
-  (do (insert {:level "info"  :message "im an info message"})
-      (insert {:level "error" :message "im an error message"})))
+  (do (insert {:level "Info"  :message "im an info message" :application "App1" :service "Service1" :exceptionJSON "" :timestamp "2012-03-11T02:19:00"})
+      (insert {:level "Error" :message "im an error message" :application "App2" :service "Service2" :exceptionJson "" :timestamp "2012-03-11T02:19:00"})))
 
 (defn search-test
   []
