@@ -14,21 +14,23 @@
   [component id]
   (reagent/render-component [component] (.getElementById js/document id)))
 
-(def default-config
-  {:columns {
-             :timestamp     {:label "Timestamp" :visible true}
-             :level         {:label "Level" :visible true}
-             :message       {:label "Message" :visible true}
-             :application   {:label "Application" :visible true}
-             :service       {:label "Service" :visible true}
-             :exceptionJson {:label "Exception" :visible true}
-             }})
+(defn set-default-config 
+  [config]
+  (let [default-config {:columns {
+                          :timestamp     {:label "Timestamp" :visible true}
+                          :level         {:label "Level" :visible true}
+                          :message       {:label "Message" :visible true}
+                          :application   {:label "Application" :visible true}
+                          :service       {:label "Service" :visible true}
+                          :exceptionJson {:label "Exception" :visible true}
+                          }}]
+    (reset! config default-config)))
 
 (defn get-config []
   (let [config (local-storage (atom {}) :config)]
-    (if (= @config nil)
-      (default-config)
-      @config)))
+    (if (not (contains? :columns @config))
+      (set-default-config config))
+    config))
 
 (render header "header")
 

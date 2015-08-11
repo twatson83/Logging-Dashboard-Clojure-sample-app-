@@ -23,92 +23,92 @@ cljs.core.async.impl.ioc_helpers.finished_QMARK_ = (function finished_QMARK_(sta
 return cljs.core.keyword_identical_QMARK_.call(null,(state_array[cljs.core.async.impl.ioc_helpers.STATE_IDX]),new cljs.core.Keyword(null,"finished","finished",-1018867731));
 });
 cljs.core.async.impl.ioc_helpers.fn_handler = (function fn_handler(f){
-if(typeof cljs.core.async.impl.ioc_helpers.t23704 !== 'undefined'){
+if(typeof cljs.core.async.impl.ioc_helpers.t22987 !== 'undefined'){
 } else {
 
 /**
 * @constructor
 */
-cljs.core.async.impl.ioc_helpers.t23704 = (function (f,fn_handler,meta23705){
+cljs.core.async.impl.ioc_helpers.t22987 = (function (f,fn_handler,meta22988){
 this.f = f;
 this.fn_handler = fn_handler;
-this.meta23705 = meta23705;
+this.meta22988 = meta22988;
 this.cljs$lang$protocol_mask$partition1$ = 0;
 this.cljs$lang$protocol_mask$partition0$ = 393216;
 })
-cljs.core.async.impl.ioc_helpers.t23704.prototype.cljs$core$async$impl$protocols$Handler$ = true;
+cljs.core.async.impl.ioc_helpers.t22987.prototype.cljs$core$async$impl$protocols$Handler$ = true;
 
-cljs.core.async.impl.ioc_helpers.t23704.prototype.cljs$core$async$impl$protocols$Handler$active_QMARK_$arity$1 = (function (_){
+cljs.core.async.impl.ioc_helpers.t22987.prototype.cljs$core$async$impl$protocols$Handler$active_QMARK_$arity$1 = (function (_){
 var self__ = this;
 var ___$1 = this;
 return true;
 });
 
-cljs.core.async.impl.ioc_helpers.t23704.prototype.cljs$core$async$impl$protocols$Handler$commit$arity$1 = (function (_){
+cljs.core.async.impl.ioc_helpers.t22987.prototype.cljs$core$async$impl$protocols$Handler$commit$arity$1 = (function (_){
 var self__ = this;
 var ___$1 = this;
 return self__.f;
 });
 
-cljs.core.async.impl.ioc_helpers.t23704.prototype.cljs$core$IMeta$_meta$arity$1 = (function (_23706){
+cljs.core.async.impl.ioc_helpers.t22987.prototype.cljs$core$IMeta$_meta$arity$1 = (function (_22989){
 var self__ = this;
-var _23706__$1 = this;
-return self__.meta23705;
+var _22989__$1 = this;
+return self__.meta22988;
 });
 
-cljs.core.async.impl.ioc_helpers.t23704.prototype.cljs$core$IWithMeta$_with_meta$arity$2 = (function (_23706,meta23705__$1){
+cljs.core.async.impl.ioc_helpers.t22987.prototype.cljs$core$IWithMeta$_with_meta$arity$2 = (function (_22989,meta22988__$1){
 var self__ = this;
-var _23706__$1 = this;
-return (new cljs.core.async.impl.ioc_helpers.t23704(self__.f,self__.fn_handler,meta23705__$1));
+var _22989__$1 = this;
+return (new cljs.core.async.impl.ioc_helpers.t22987(self__.f,self__.fn_handler,meta22988__$1));
 });
 
-cljs.core.async.impl.ioc_helpers.t23704.cljs$lang$type = true;
+cljs.core.async.impl.ioc_helpers.t22987.cljs$lang$type = true;
 
-cljs.core.async.impl.ioc_helpers.t23704.cljs$lang$ctorStr = "cljs.core.async.impl.ioc-helpers/t23704";
+cljs.core.async.impl.ioc_helpers.t22987.cljs$lang$ctorStr = "cljs.core.async.impl.ioc-helpers/t22987";
 
-cljs.core.async.impl.ioc_helpers.t23704.cljs$lang$ctorPrWriter = (function (this__4343__auto__,writer__4344__auto__,opt__4345__auto__){
-return cljs.core._write.call(null,writer__4344__auto__,"cljs.core.async.impl.ioc-helpers/t23704");
+cljs.core.async.impl.ioc_helpers.t22987.cljs$lang$ctorPrWriter = (function (this__4343__auto__,writer__4344__auto__,opt__4345__auto__){
+return cljs.core._write.call(null,writer__4344__auto__,"cljs.core.async.impl.ioc-helpers/t22987");
 });
 
-cljs.core.async.impl.ioc_helpers.__GT_t23704 = (function __GT_t23704(f__$1,fn_handler__$1,meta23705){
-return (new cljs.core.async.impl.ioc_helpers.t23704(f__$1,fn_handler__$1,meta23705));
+cljs.core.async.impl.ioc_helpers.__GT_t22987 = (function __GT_t22987(f__$1,fn_handler__$1,meta22988){
+return (new cljs.core.async.impl.ioc_helpers.t22987(f__$1,fn_handler__$1,meta22988));
 });
 
 }
 
-return (new cljs.core.async.impl.ioc_helpers.t23704(f,fn_handler,new cljs.core.PersistentArrayMap(null, 5, [new cljs.core.Keyword(null,"end-column","end-column",1425389514),19,new cljs.core.Keyword(null,"end-line","end-line",1837326455),30,new cljs.core.Keyword(null,"column","column",2078222095),3,new cljs.core.Keyword(null,"line","line",212345235),27,new cljs.core.Keyword(null,"file","file",-1269645878),"/home/tim/git/Logging-Dashboard/resources/public/js/cljs/core/async/impl/ioc_helpers.cljs"], null)));
+return (new cljs.core.async.impl.ioc_helpers.t22987(f,fn_handler,new cljs.core.PersistentArrayMap(null, 5, [new cljs.core.Keyword(null,"end-column","end-column",1425389514),19,new cljs.core.Keyword(null,"end-line","end-line",1837326455),30,new cljs.core.Keyword(null,"column","column",2078222095),3,new cljs.core.Keyword(null,"line","line",212345235),27,new cljs.core.Keyword(null,"file","file",-1269645878),"/home/tim/clojure/logging-dashboard/resources/public/js/cljs/core/async/impl/ioc_helpers.cljs"], null)));
 });
 cljs.core.async.impl.ioc_helpers.run_state_machine = (function run_state_machine(state){
 return cljs.core.async.impl.ioc_helpers.aget_object.call(null,state,cljs.core.async.impl.ioc_helpers.FN_IDX).call(null,state);
 });
 cljs.core.async.impl.ioc_helpers.run_state_machine_wrapped = (function run_state_machine_wrapped(state){
 try{return cljs.core.async.impl.ioc_helpers.run_state_machine.call(null,state);
-}catch (e23708){if((e23708 instanceof Object)){
-var ex = e23708;
+}catch (e22991){if((e22991 instanceof Object)){
+var ex = e22991;
 cljs.core.async.impl.protocols.close_BANG_.call(null,cljs.core.async.impl.ioc_helpers.aget_object.call(null,state,cljs.core.async.impl.ioc_helpers.USER_START_IDX));
 
 throw ex;
 } else {
-throw e23708;
+throw e22991;
 
 }
 }});
 cljs.core.async.impl.ioc_helpers.take_BANG_ = (function take_BANG_(state,blk,c){
 var temp__4124__auto__ = cljs.core.async.impl.protocols.take_BANG_.call(null,c,cljs.core.async.impl.ioc_helpers.fn_handler.call(null,(function (x){
-var statearr_23711_23713 = state;
-(statearr_23711_23713[cljs.core.async.impl.ioc_helpers.VALUE_IDX] = x);
+var statearr_22994_22996 = state;
+(statearr_22994_22996[cljs.core.async.impl.ioc_helpers.VALUE_IDX] = x);
 
-(statearr_23711_23713[cljs.core.async.impl.ioc_helpers.STATE_IDX] = blk);
+(statearr_22994_22996[cljs.core.async.impl.ioc_helpers.STATE_IDX] = blk);
 
 
 return cljs.core.async.impl.ioc_helpers.run_state_machine_wrapped.call(null,state);
 })));
 if(cljs.core.truth_(temp__4124__auto__)){
 var cb = temp__4124__auto__;
-var statearr_23712_23714 = state;
-(statearr_23712_23714[cljs.core.async.impl.ioc_helpers.VALUE_IDX] = cljs.core.deref.call(null,cb));
+var statearr_22995_22997 = state;
+(statearr_22995_22997[cljs.core.async.impl.ioc_helpers.VALUE_IDX] = cljs.core.deref.call(null,cb));
 
-(statearr_23712_23714[cljs.core.async.impl.ioc_helpers.STATE_IDX] = blk);
+(statearr_22995_22997[cljs.core.async.impl.ioc_helpers.STATE_IDX] = blk);
 
 
 return new cljs.core.Keyword(null,"recur","recur",-437573268);
@@ -118,20 +118,20 @@ return null;
 });
 cljs.core.async.impl.ioc_helpers.put_BANG_ = (function put_BANG_(state,blk,c,val){
 var temp__4124__auto__ = cljs.core.async.impl.protocols.put_BANG_.call(null,c,val,cljs.core.async.impl.ioc_helpers.fn_handler.call(null,(function (ret_val){
-var statearr_23717_23719 = state;
-(statearr_23717_23719[cljs.core.async.impl.ioc_helpers.VALUE_IDX] = ret_val);
+var statearr_23000_23002 = state;
+(statearr_23000_23002[cljs.core.async.impl.ioc_helpers.VALUE_IDX] = ret_val);
 
-(statearr_23717_23719[cljs.core.async.impl.ioc_helpers.STATE_IDX] = blk);
+(statearr_23000_23002[cljs.core.async.impl.ioc_helpers.STATE_IDX] = blk);
 
 
 return cljs.core.async.impl.ioc_helpers.run_state_machine_wrapped.call(null,state);
 })));
 if(cljs.core.truth_(temp__4124__auto__)){
 var cb = temp__4124__auto__;
-var statearr_23718_23720 = state;
-(statearr_23718_23720[cljs.core.async.impl.ioc_helpers.VALUE_IDX] = cljs.core.deref.call(null,cb));
+var statearr_23001_23003 = state;
+(statearr_23001_23003[cljs.core.async.impl.ioc_helpers.VALUE_IDX] = cljs.core.deref.call(null,cb));
 
-(statearr_23718_23720[cljs.core.async.impl.ioc_helpers.STATE_IDX] = blk);
+(statearr_23001_23003[cljs.core.async.impl.ioc_helpers.STATE_IDX] = blk);
 
 
 return new cljs.core.Keyword(null,"recur","recur",-437573268);
@@ -191,11 +191,11 @@ var this__4359__auto____$1 = this;
 return cljs.core._lookup.call(null,this__4359__auto____$1,k__4360__auto__,null);
 });
 
-cljs.core.async.impl.ioc_helpers.ExceptionFrame.prototype.cljs$core$ILookup$_lookup$arity$3 = (function (this__4361__auto__,k23722,else__4362__auto__){
+cljs.core.async.impl.ioc_helpers.ExceptionFrame.prototype.cljs$core$ILookup$_lookup$arity$3 = (function (this__4361__auto__,k23005,else__4362__auto__){
 var self__ = this;
 var this__4361__auto____$1 = this;
-var G__23724 = (((k23722 instanceof cljs.core.Keyword))?k23722.fqn:null);
-switch (G__23724) {
+var G__23007 = (((k23005 instanceof cljs.core.Keyword))?k23005.fqn:null);
+switch (G__23007) {
 case "prev":
 return self__.prev;
 
@@ -217,7 +217,7 @@ return self__.catch_block;
 
 break;
 default:
-return cljs.core.get.call(null,self__.__extmap,k23722,else__4362__auto__);
+return cljs.core.get.call(null,self__.__extmap,k23005,else__4362__auto__);
 
 }
 });
@@ -291,27 +291,27 @@ return (new cljs.core.async.impl.ioc_helpers.ExceptionFrame(self__.catch_block,s
 }
 });
 
-cljs.core.async.impl.ioc_helpers.ExceptionFrame.prototype.cljs$core$IAssociative$_assoc$arity$3 = (function (this__4366__auto__,k__4367__auto__,G__23721){
+cljs.core.async.impl.ioc_helpers.ExceptionFrame.prototype.cljs$core$IAssociative$_assoc$arity$3 = (function (this__4366__auto__,k__4367__auto__,G__23004){
 var self__ = this;
 var this__4366__auto____$1 = this;
-var pred__23725 = cljs.core.keyword_identical_QMARK_;
-var expr__23726 = k__4367__auto__;
-if(cljs.core.truth_(pred__23725.call(null,new cljs.core.Keyword(null,"catch-block","catch-block",1175212748),expr__23726))){
-return (new cljs.core.async.impl.ioc_helpers.ExceptionFrame(G__23721,self__.catch_exception,self__.finally_block,self__.continue_block,self__.prev,self__.__meta,self__.__extmap,null));
+var pred__23008 = cljs.core.keyword_identical_QMARK_;
+var expr__23009 = k__4367__auto__;
+if(cljs.core.truth_(pred__23008.call(null,new cljs.core.Keyword(null,"catch-block","catch-block",1175212748),expr__23009))){
+return (new cljs.core.async.impl.ioc_helpers.ExceptionFrame(G__23004,self__.catch_exception,self__.finally_block,self__.continue_block,self__.prev,self__.__meta,self__.__extmap,null));
 } else {
-if(cljs.core.truth_(pred__23725.call(null,new cljs.core.Keyword(null,"catch-exception","catch-exception",-1997306795),expr__23726))){
-return (new cljs.core.async.impl.ioc_helpers.ExceptionFrame(self__.catch_block,G__23721,self__.finally_block,self__.continue_block,self__.prev,self__.__meta,self__.__extmap,null));
+if(cljs.core.truth_(pred__23008.call(null,new cljs.core.Keyword(null,"catch-exception","catch-exception",-1997306795),expr__23009))){
+return (new cljs.core.async.impl.ioc_helpers.ExceptionFrame(self__.catch_block,G__23004,self__.finally_block,self__.continue_block,self__.prev,self__.__meta,self__.__extmap,null));
 } else {
-if(cljs.core.truth_(pred__23725.call(null,new cljs.core.Keyword(null,"finally-block","finally-block",832982472),expr__23726))){
-return (new cljs.core.async.impl.ioc_helpers.ExceptionFrame(self__.catch_block,self__.catch_exception,G__23721,self__.continue_block,self__.prev,self__.__meta,self__.__extmap,null));
+if(cljs.core.truth_(pred__23008.call(null,new cljs.core.Keyword(null,"finally-block","finally-block",832982472),expr__23009))){
+return (new cljs.core.async.impl.ioc_helpers.ExceptionFrame(self__.catch_block,self__.catch_exception,G__23004,self__.continue_block,self__.prev,self__.__meta,self__.__extmap,null));
 } else {
-if(cljs.core.truth_(pred__23725.call(null,new cljs.core.Keyword(null,"continue-block","continue-block",-1852047850),expr__23726))){
-return (new cljs.core.async.impl.ioc_helpers.ExceptionFrame(self__.catch_block,self__.catch_exception,self__.finally_block,G__23721,self__.prev,self__.__meta,self__.__extmap,null));
+if(cljs.core.truth_(pred__23008.call(null,new cljs.core.Keyword(null,"continue-block","continue-block",-1852047850),expr__23009))){
+return (new cljs.core.async.impl.ioc_helpers.ExceptionFrame(self__.catch_block,self__.catch_exception,self__.finally_block,G__23004,self__.prev,self__.__meta,self__.__extmap,null));
 } else {
-if(cljs.core.truth_(pred__23725.call(null,new cljs.core.Keyword(null,"prev","prev",-1597069226),expr__23726))){
-return (new cljs.core.async.impl.ioc_helpers.ExceptionFrame(self__.catch_block,self__.catch_exception,self__.finally_block,self__.continue_block,G__23721,self__.__meta,self__.__extmap,null));
+if(cljs.core.truth_(pred__23008.call(null,new cljs.core.Keyword(null,"prev","prev",-1597069226),expr__23009))){
+return (new cljs.core.async.impl.ioc_helpers.ExceptionFrame(self__.catch_block,self__.catch_exception,self__.finally_block,self__.continue_block,G__23004,self__.__meta,self__.__extmap,null));
 } else {
-return (new cljs.core.async.impl.ioc_helpers.ExceptionFrame(self__.catch_block,self__.catch_exception,self__.finally_block,self__.continue_block,self__.prev,self__.__meta,cljs.core.assoc.call(null,self__.__extmap,k__4367__auto__,G__23721),null));
+return (new cljs.core.async.impl.ioc_helpers.ExceptionFrame(self__.catch_block,self__.catch_exception,self__.finally_block,self__.continue_block,self__.prev,self__.__meta,cljs.core.assoc.call(null,self__.__extmap,k__4367__auto__,G__23004),null));
 }
 }
 }
@@ -325,10 +325,10 @@ var this__4371__auto____$1 = this;
 return cljs.core.seq.call(null,cljs.core.concat.call(null,new cljs.core.PersistentVector(null, 5, 5, cljs.core.PersistentVector.EMPTY_NODE, [(new cljs.core.PersistentVector(null,2,(5),cljs.core.PersistentVector.EMPTY_NODE,[new cljs.core.Keyword(null,"catch-block","catch-block",1175212748),self__.catch_block],null)),(new cljs.core.PersistentVector(null,2,(5),cljs.core.PersistentVector.EMPTY_NODE,[new cljs.core.Keyword(null,"catch-exception","catch-exception",-1997306795),self__.catch_exception],null)),(new cljs.core.PersistentVector(null,2,(5),cljs.core.PersistentVector.EMPTY_NODE,[new cljs.core.Keyword(null,"finally-block","finally-block",832982472),self__.finally_block],null)),(new cljs.core.PersistentVector(null,2,(5),cljs.core.PersistentVector.EMPTY_NODE,[new cljs.core.Keyword(null,"continue-block","continue-block",-1852047850),self__.continue_block],null)),(new cljs.core.PersistentVector(null,2,(5),cljs.core.PersistentVector.EMPTY_NODE,[new cljs.core.Keyword(null,"prev","prev",-1597069226),self__.prev],null))], null),self__.__extmap));
 });
 
-cljs.core.async.impl.ioc_helpers.ExceptionFrame.prototype.cljs$core$IWithMeta$_with_meta$arity$2 = (function (this__4358__auto__,G__23721){
+cljs.core.async.impl.ioc_helpers.ExceptionFrame.prototype.cljs$core$IWithMeta$_with_meta$arity$2 = (function (this__4358__auto__,G__23004){
 var self__ = this;
 var this__4358__auto____$1 = this;
-return (new cljs.core.async.impl.ioc_helpers.ExceptionFrame(self__.catch_block,self__.catch_exception,self__.finally_block,self__.continue_block,self__.prev,G__23721,self__.__extmap,self__.__hash));
+return (new cljs.core.async.impl.ioc_helpers.ExceptionFrame(self__.catch_block,self__.catch_exception,self__.finally_block,self__.continue_block,self__.prev,G__23004,self__.__extmap,self__.__hash));
 });
 
 cljs.core.async.impl.ioc_helpers.ExceptionFrame.prototype.cljs$core$ICollection$_conj$arity$2 = (function (this__4364__auto__,entry__4365__auto__){
@@ -355,15 +355,15 @@ cljs.core.async.impl.ioc_helpers.__GT_ExceptionFrame = (function __GT_ExceptionF
 return (new cljs.core.async.impl.ioc_helpers.ExceptionFrame(catch_block,catch_exception,finally_block,continue_block,prev));
 });
 
-cljs.core.async.impl.ioc_helpers.map__GT_ExceptionFrame = (function map__GT_ExceptionFrame(G__23723){
-return (new cljs.core.async.impl.ioc_helpers.ExceptionFrame(new cljs.core.Keyword(null,"catch-block","catch-block",1175212748).cljs$core$IFn$_invoke$arity$1(G__23723),new cljs.core.Keyword(null,"catch-exception","catch-exception",-1997306795).cljs$core$IFn$_invoke$arity$1(G__23723),new cljs.core.Keyword(null,"finally-block","finally-block",832982472).cljs$core$IFn$_invoke$arity$1(G__23723),new cljs.core.Keyword(null,"continue-block","continue-block",-1852047850).cljs$core$IFn$_invoke$arity$1(G__23723),new cljs.core.Keyword(null,"prev","prev",-1597069226).cljs$core$IFn$_invoke$arity$1(G__23723),null,cljs.core.dissoc.call(null,G__23723,new cljs.core.Keyword(null,"catch-block","catch-block",1175212748),new cljs.core.Keyword(null,"catch-exception","catch-exception",-1997306795),new cljs.core.Keyword(null,"finally-block","finally-block",832982472),new cljs.core.Keyword(null,"continue-block","continue-block",-1852047850),new cljs.core.Keyword(null,"prev","prev",-1597069226))));
+cljs.core.async.impl.ioc_helpers.map__GT_ExceptionFrame = (function map__GT_ExceptionFrame(G__23006){
+return (new cljs.core.async.impl.ioc_helpers.ExceptionFrame(new cljs.core.Keyword(null,"catch-block","catch-block",1175212748).cljs$core$IFn$_invoke$arity$1(G__23006),new cljs.core.Keyword(null,"catch-exception","catch-exception",-1997306795).cljs$core$IFn$_invoke$arity$1(G__23006),new cljs.core.Keyword(null,"finally-block","finally-block",832982472).cljs$core$IFn$_invoke$arity$1(G__23006),new cljs.core.Keyword(null,"continue-block","continue-block",-1852047850).cljs$core$IFn$_invoke$arity$1(G__23006),new cljs.core.Keyword(null,"prev","prev",-1597069226).cljs$core$IFn$_invoke$arity$1(G__23006),null,cljs.core.dissoc.call(null,G__23006,new cljs.core.Keyword(null,"catch-block","catch-block",1175212748),new cljs.core.Keyword(null,"catch-exception","catch-exception",-1997306795),new cljs.core.Keyword(null,"finally-block","finally-block",832982472),new cljs.core.Keyword(null,"continue-block","continue-block",-1852047850),new cljs.core.Keyword(null,"prev","prev",-1597069226))));
 });
 
 cljs.core.async.impl.ioc_helpers.add_exception_frame = (function add_exception_frame(state,catch_block,catch_exception,finally_block,continue_block){
-var statearr_23730 = state;
-(statearr_23730[cljs.core.async.impl.ioc_helpers.EXCEPTION_FRAMES] = cljs.core.async.impl.ioc_helpers.__GT_ExceptionFrame.call(null,catch_block,catch_exception,finally_block,continue_block,cljs.core.async.impl.ioc_helpers.aget_object.call(null,state,cljs.core.async.impl.ioc_helpers.EXCEPTION_FRAMES)));
+var statearr_23013 = state;
+(statearr_23013[cljs.core.async.impl.ioc_helpers.EXCEPTION_FRAMES] = cljs.core.async.impl.ioc_helpers.__GT_ExceptionFrame.call(null,catch_block,catch_exception,finally_block,continue_block,cljs.core.async.impl.ioc_helpers.aget_object.call(null,state,cljs.core.async.impl.ioc_helpers.EXCEPTION_FRAMES)));
 
-return statearr_23730;
+return statearr_23013;
 });
 cljs.core.async.impl.ioc_helpers.process_exception = (function process_exception(state){
 while(true){
@@ -392,16 +392,16 @@ return and__3749__auto____$1;
 return and__3749__auto__;
 }
 })())){
-var statearr_23736 = state;
-(statearr_23736[cljs.core.async.impl.ioc_helpers.STATE_IDX] = catch_block);
+var statearr_23019 = state;
+(statearr_23019[cljs.core.async.impl.ioc_helpers.STATE_IDX] = catch_block);
 
-(statearr_23736[cljs.core.async.impl.ioc_helpers.VALUE_IDX] = exception);
+(statearr_23019[cljs.core.async.impl.ioc_helpers.VALUE_IDX] = exception);
 
-(statearr_23736[cljs.core.async.impl.ioc_helpers.CURRENT_EXCEPTION] = null);
+(statearr_23019[cljs.core.async.impl.ioc_helpers.CURRENT_EXCEPTION] = null);
 
-(statearr_23736[cljs.core.async.impl.ioc_helpers.EXCEPTION_FRAMES] = cljs.core.assoc.call(null,exception_frame,new cljs.core.Keyword(null,"catch-block","catch-block",1175212748),null,new cljs.core.Keyword(null,"catch-exception","catch-exception",-1997306795),null));
+(statearr_23019[cljs.core.async.impl.ioc_helpers.EXCEPTION_FRAMES] = cljs.core.assoc.call(null,exception_frame,new cljs.core.Keyword(null,"catch-block","catch-block",1175212748),null,new cljs.core.Keyword(null,"catch-exception","catch-exception",-1997306795),null));
 
-return statearr_23736;
+return statearr_23019;
 } else {
 if(cljs.core.truth_((function (){var and__3749__auto__ = exception;
 if(cljs.core.truth_(and__3749__auto__)){
@@ -410,12 +410,12 @@ return (cljs.core.not.call(null,catch_block)) && (cljs.core.not.call(null,new cl
 return and__3749__auto__;
 }
 })())){
-var statearr_23737_23741 = state;
-(statearr_23737_23741[cljs.core.async.impl.ioc_helpers.EXCEPTION_FRAMES] = new cljs.core.Keyword(null,"prev","prev",-1597069226).cljs$core$IFn$_invoke$arity$1(exception_frame));
+var statearr_23020_23024 = state;
+(statearr_23020_23024[cljs.core.async.impl.ioc_helpers.EXCEPTION_FRAMES] = new cljs.core.Keyword(null,"prev","prev",-1597069226).cljs$core$IFn$_invoke$arity$1(exception_frame));
 
 
-var G__23742 = state;
-state = G__23742;
+var G__23025 = state;
+state = G__23025;
 continue;
 } else {
 if(cljs.core.truth_((function (){var and__3749__auto__ = exception;
@@ -430,12 +430,12 @@ return and__3749__auto____$1;
 return and__3749__auto__;
 }
 })())){
-var statearr_23738 = state;
-(statearr_23738[cljs.core.async.impl.ioc_helpers.STATE_IDX] = new cljs.core.Keyword(null,"finally-block","finally-block",832982472).cljs$core$IFn$_invoke$arity$1(exception_frame));
+var statearr_23021 = state;
+(statearr_23021[cljs.core.async.impl.ioc_helpers.STATE_IDX] = new cljs.core.Keyword(null,"finally-block","finally-block",832982472).cljs$core$IFn$_invoke$arity$1(exception_frame));
 
-(statearr_23738[cljs.core.async.impl.ioc_helpers.EXCEPTION_FRAMES] = cljs.core.assoc.call(null,exception_frame,new cljs.core.Keyword(null,"finally-block","finally-block",832982472),null));
+(statearr_23021[cljs.core.async.impl.ioc_helpers.EXCEPTION_FRAMES] = cljs.core.assoc.call(null,exception_frame,new cljs.core.Keyword(null,"finally-block","finally-block",832982472),null));
 
-return statearr_23738;
+return statearr_23021;
 } else {
 if(cljs.core.truth_((function (){var and__3749__auto__ = cljs.core.not.call(null,exception);
 if(and__3749__auto__){
@@ -444,20 +444,20 @@ return new cljs.core.Keyword(null,"finally-block","finally-block",832982472).clj
 return and__3749__auto__;
 }
 })())){
-var statearr_23739 = state;
-(statearr_23739[cljs.core.async.impl.ioc_helpers.STATE_IDX] = new cljs.core.Keyword(null,"finally-block","finally-block",832982472).cljs$core$IFn$_invoke$arity$1(exception_frame));
+var statearr_23022 = state;
+(statearr_23022[cljs.core.async.impl.ioc_helpers.STATE_IDX] = new cljs.core.Keyword(null,"finally-block","finally-block",832982472).cljs$core$IFn$_invoke$arity$1(exception_frame));
 
-(statearr_23739[cljs.core.async.impl.ioc_helpers.EXCEPTION_FRAMES] = cljs.core.assoc.call(null,exception_frame,new cljs.core.Keyword(null,"finally-block","finally-block",832982472),null));
+(statearr_23022[cljs.core.async.impl.ioc_helpers.EXCEPTION_FRAMES] = cljs.core.assoc.call(null,exception_frame,new cljs.core.Keyword(null,"finally-block","finally-block",832982472),null));
 
-return statearr_23739;
+return statearr_23022;
 } else {
 if((cljs.core.not.call(null,exception)) && (cljs.core.not.call(null,new cljs.core.Keyword(null,"finally-block","finally-block",832982472).cljs$core$IFn$_invoke$arity$1(exception_frame)))){
-var statearr_23740 = state;
-(statearr_23740[cljs.core.async.impl.ioc_helpers.STATE_IDX] = new cljs.core.Keyword(null,"continue-block","continue-block",-1852047850).cljs$core$IFn$_invoke$arity$1(exception_frame));
+var statearr_23023 = state;
+(statearr_23023[cljs.core.async.impl.ioc_helpers.STATE_IDX] = new cljs.core.Keyword(null,"continue-block","continue-block",-1852047850).cljs$core$IFn$_invoke$arity$1(exception_frame));
 
-(statearr_23740[cljs.core.async.impl.ioc_helpers.EXCEPTION_FRAMES] = new cljs.core.Keyword(null,"prev","prev",-1597069226).cljs$core$IFn$_invoke$arity$1(exception_frame));
+(statearr_23023[cljs.core.async.impl.ioc_helpers.EXCEPTION_FRAMES] = new cljs.core.Keyword(null,"prev","prev",-1597069226).cljs$core$IFn$_invoke$arity$1(exception_frame));
 
-return statearr_23740;
+return statearr_23023;
 } else {
 throw (new Error("No matching clause"));
 
