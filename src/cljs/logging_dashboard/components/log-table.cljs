@@ -4,41 +4,44 @@
             [goog.i18n.DateTimeFormat :as dtf]))
 
 (defn column-picker 
-  [columns]
-  [:div.btn-group
-   [:button.btn.btn-default.btn-sm.dropdown-toggle {:type "button"
-                                                    :data-toggle "dropdown"
-                                                    :aria-haspopup "true"
-                                                    :aria-expanded "false"} "Columns "
-    [:span.caret]]
-   [:ul.dropdown-menu 
-    [:li [:div.checkbox [:label [:input {:type "checkbox" :checked "checked"} "Timestamp"]]]]
-    [:li [:div.checkbox [:label [:input {:type "checkbox" :checked "checked"} "Level"]]]]
-    [:li [:div.checkbox [:label [:input {:type "checkbox" :checked "checked"} "Message"]]]]
-    [:li [:div.checkbox [:label [:input {:type "checkbox" :checked "checked"} "Application"]]]]
-    [:li [:div.checkbox [:label [:input {:type "checkbox" :checked "checked"} "Service"]]]]
-    [:li [:div.checkbox [:label [:input {:type "checkbox" :checked "checked"} "Exception"]]]]
-    ]
-   ]
+  [config]
+  (let [columns (:columns @config)]
+    [:div.btn-group
+     [:button.btn.btn-default.btn-sm.dropdown-toggle {:type "button"
+                                                      :data-toggle "dropdown"
+                                                      :aria-haspopup "true"
+                                                      :aria-expanded "false"} "Columns "
+      [:span.caret]]
+     [:ul.dropdown-menu 
+      (for [[k v] columns]
+        (let [visible (:visible v)]
+          [:li 
+           [:div.checkbox 
+            [:label 
+             [:input {:type "checkbox"
+                      :checked visible
+                      :on-change #(swap! config [k] {:visible (not visible)})} (:label v)]]]]))
+      ]
+     ])
 )
 
-(defn filter [config]
+(defn table-filter [config]
   [:div.log-filter.row
    [:div.col-md-4
-    [column-picker (:columns config)]
+    [column-picker config]
     ]
    ])
 
 (defn table-header 
-  [{:keys [name label]} column]
+  [name {:keys [label]} column]
     [:th [:a {:href "#" :class name} label]])
 
 (defn table [logs config]
-  (let [columns (:columns config)]
+  (let [columns (:columns @config)]
     [:table.table.table-bordered.table-hover.table-condensed
      [:tr
-      (for [column columns]
-        [table-header column])
+      (for [[k v] columns]
+        (if (:visible v) ^{:key k} [table-header k v]))
       ]
      (for [log (get logs :hits)]
        (let [{:keys [timestamp level message application service exceptionJson]} log
@@ -46,7 +49,7 @@
                     (or (= level "ERROR") (= level "Error")) "danger"
                     (or (= level "WARN") (= level "Warn")) "warning"
                     :else "")]
-         [:tr {:class class}
+         ^{:key log} [:tr {:class class}
           (if (:visible (:timestamp columns))
             [:td.timestamp   (datetime/format :MEDIUM_DATETIME timestamp)]) 
           (if (:visible (:level columns))
@@ -73,7 +76,8 @@
 (defn log-table [logs config]
   [:div.log-table
    [:div.container-fluid
-    [filter config]
+    [table-filter config]
     [table logs config]
     [pager]]
     ])
+
