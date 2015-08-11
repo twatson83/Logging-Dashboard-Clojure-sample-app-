@@ -24,3 +24,6 @@ body { padding-top: 70px; }
 .log-filter{
     padding-bottom: 10px;
 }
+.column-picker{
+    float: right;
+}

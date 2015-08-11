@@ -4,11 +4,11 @@
   (:require [secretary.core :as secretary]
             [logging-dashboard.server :as server :refer (chsk-send!)]
             [logging-dashboard.components.header    :refer [header]]
-            [logging-dashboard.components.log-table :refer [log-table]]
+            [logging-dashboard.components.log_table :refer [log-table]]
             [logging-dashboard.components.errors    :refer [page-not-found]]
             [taoensso.encore          :as enc    :refer (tracef debugf infof warnf errorf)]
             [alandipert.storage-atom :refer [local-storage]]
-            [reagent.core :as reagent]))
+            [reagent.core :as reagent :refer [atom]]))
 
 (defn render 
   [component id]
@@ -28,7 +28,7 @@
 
 (defn get-config []
   (let [config (local-storage (atom {}) :config)]
-    (if (not (contains? :columns @config))
+    (if (empty? @config)
       (set-default-config config))
     config))
 
