@@ -2,8 +2,8 @@
   (:require-macros
    [secretary.core :refer [defroute]])
   (:require [secretary.core :as secretary]
-            [logging-dashboard.server :as server :refer (chsk-send!)]
             [logging-dashboard.components.header    :refer [header]]
+            [logging-dashboard.models.logs          :refer [search]]
             [logging-dashboard.components.log_table :refer [log-table]]
             [logging-dashboard.components.errors    :refer [page-not-found]]
             [taoensso.encore          :as enc    :refer (tracef debugf infof warnf errorf)]
@@ -23,7 +23,11 @@
                           :application   {:label "Application" :visible true}
                           :service       {:label "Service" :visible true}
                           :exceptionJson {:label "Exception" :visible true}
-                          }}]
+                          }
+                        :sorting {:field :timestamp 
+                                  :direction "desc"}
+                        :page-size 100
+                        :page-number 1}]
     (reset! config default-config)))
 
 (defn get-config []
@@ -35,16 +39,9 @@
 (render header "header")
 
 (defroute home-path "/" []
-  (server/chsk-send! 
-   [:logs/search {:query  {:match_all {}} 
-                  :sort   {:timestamp "desc"} 
-                  :from   0 
-                  :size   100}] 
-   10000
-   (fn [cb-reply] 
-     (let [content (.getElementById js/document "content")
-           config  (get-config)]
-       (reagent/render-component [log-table cb-reply config] content)))))
+  (let [content (.getElementById js/document "content")
+        config (get-config)]
+    (search config #(reagent/render-component [log-table % config] content))))
 
 (defroute log-path "/logs/:id" [id]
   (render page-not-found "content"))
