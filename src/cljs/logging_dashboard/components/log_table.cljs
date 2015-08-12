@@ -76,20 +76,26 @@
                         [:td.exceptionJson exceptionJson])]))]))
 
 (defn pager 
-  [config]
+  [config logs]
   (let [on-click #(do (.preventDefault %1) 
-                      (swap! config update-in [:page-num] %2)
+                      (swap! config update-in [:page-num] (%2 (:page-num @config)))
                       (search @config nil))
         inc-page #(on-click % inc)
-        dec-page #(on-click % dec)]
+        dec-page #(on-click % dec)
+        {:keys [page-num page-size]} @config
+        num-of-logs (:count @logs)]
     [:nav.log-pager
      [:ul.pagination
-      [:li [:a {:href "#" :aria-label "Previous" :on-click inc-page} "<<"] ]
-      [:li [:a {:href "#" :aria-label "Next" :on-click dec-page} ">>"]]]]))
+      [:li [:a {:href "#" :aria-label "Previous" 
+                :on-click (if (> page-num 0) inc-page)
+                :class (if (<= page-num 0) "disabled")} "<<"] ]
+      [:li [:a {:href "#" :aria-label "Next" 
+                :on-click (if (< (* page-num page-size) num-of-logs) dec-page)
+                :class (if (>= (* page-num page-size) num-of-logs) "disabled")} ">>"]]]]))
 
 (defn log-table [logs config]
   [:div.log-table
    [:div.container-fluid
     [table-filter config]
     [table logs config]
-    [pager config]]])
+    [pager config logs]]])
