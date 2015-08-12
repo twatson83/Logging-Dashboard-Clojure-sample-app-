@@ -13,16 +13,16 @@ cljs.core.async.impl.dispatch.running_QMARK_ = true;
 
 cljs.core.async.impl.dispatch.queued_QMARK_ = false;
 
-var count_24480 = (0);
+var count_23843 = (0);
 while(true){
-var m_24481 = cljs.core.async.impl.dispatch.tasks.pop();
-if((m_24481 == null)){
+var m_23844 = cljs.core.async.impl.dispatch.tasks.pop();
+if((m_23844 == null)){
 } else {
-m_24481.call(null);
+m_23844.call(null);
 
-if((count_24480 < cljs.core.async.impl.dispatch.TASK_BATCH_SIZE)){
-var G__24482 = (count_24480 + (1));
-count_24480 = G__24482;
+if((count_23843 < cljs.core.async.impl.dispatch.TASK_BATCH_SIZE)){
+var G__23845 = (count_23843 + (1));
+count_23843 = G__23845;
 continue;
 } else {
 }

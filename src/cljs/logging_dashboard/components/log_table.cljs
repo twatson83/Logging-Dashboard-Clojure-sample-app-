@@ -1,6 +1,9 @@
 (ns logging-dashboard.components.log_table
   (:require [reagent.core :as reagent]
-            [logging-dashboard.datetime :as datetime]))
+            [logging-dashboard.datetime :as datetime]
+            [logging-dashboard.models.logs          :refer [search]]
+            [taoensso.encore          :as enc    :refer (tracef debugf infof warnf errorf)]
+            [goog.i18n.DateTimeFormat :as dtf]))
 
 (defn column-picker 
   [config]
@@ -30,16 +33,29 @@
     [column-picker config]]])
 
 (defn table-header 
-  [name {:keys [label]} column]
-    [:th [:a {:href "#" :class name} label]])
+  [field-name {:keys [label]} config]
+  (let [sorting        (:sorting @config)
+        sort-field     (:field sorting)
+        sort-direction (:direction sorting)
+        on-click (fn [e]
+                   (do 
+                     (.preventDefault e)
+                     (swap! config update-in [:sorting] assoc :field field-name 
+                            :direction (if (= sort-direction "asc") "desc" "asc"))
+                     (search @config nil)))
+        sort-char (if (= sort-field field-name)
+                    (if (= sort-direction "asc") 
+                      [:span.glyphicon.glyphicon-chevron-up.col-icon.pull-right] 
+                      [:span.glyphicon.glyphicon-chevron-down.col-icon.pull-right]) "")]
+    [:th [:a {:href "#" :class field-name :on-click on-click} label] sort-char]))
 
 (defn table [logs config]
   (let [columns (:columns @config)]
     [:table.table.table-bordered.table-hover.table-condensed
      [:tr
       (for [[k v] columns]
-        (if (:visible v) ^{:key k} [table-header k v]))]
-     (for [log (get logs :hits)]
+        (if (:visible v) ^{:key k} [table-header k v config]))]
+     (for [log (get @logs :hits)]
        (let [{:keys [timestamp level message application service exceptionJson]} log
              class (cond
                     (= (clojure.string/lower-case level) "error") "danger"
@@ -59,15 +75,21 @@
                       (if (get-in columns [:exceptionJson :visible])
                         [:td.exceptionJson exceptionJson])]))]))
 
-(defn pager []
-  [:nav.log-pager
-   [:ul.pagination
-    [:li [:a {:href "#" :aria-label "Previous"} "<<"] ]
-    [:li [:a {:href "#" :aria-label "Next"} ">>"]]]])
+(defn pager 
+  [config]
+  (let [on-click #(do (.preventDefault %1) 
+                      (swap! config update-in [:page-num] %2)
+                      (search @config nil))
+        inc-page #(on-click % inc)
+        dec-page #(on-click % dec)]
+    [:nav.log-pager
+     [:ul.pagination
+      [:li [:a {:href "#" :aria-label "Previous" :on-click inc-page} "<<"] ]
+      [:li [:a {:href "#" :aria-label "Next" :on-click dec-page} ">>"]]]]))
 
 (defn log-table [logs config]
   [:div.log-table
    [:div.container-fluid
     [table-filter config]
     [table logs config]
-    [pager]]])
+    [pager config]]])

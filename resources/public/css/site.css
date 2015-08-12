@@ -23,4 +23,12 @@ body { padding-top: 70px; }
 
 .log-filter{
     padding-bottom: 10px;
+<<<<<<< HEAD
+=======
+}
+.col-icon{
+    font-weight: 0;
+    font-size: 9px;
+    line-height: 1.5;
+>>>>>>> a6a1e35d65820b962d983db5c5d2aee82f2f958b
 }
