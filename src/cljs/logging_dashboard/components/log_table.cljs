@@ -47,8 +47,7 @@
                      (.preventDefault e)
                      (swap! config update-in [:sorting] assoc :field field-name 
                             :direction (if (= sort-direction "asc") "desc" "asc"))
-                     (debugf "config - %s" (:sorting @config))
-                     (search config nil)))
+                     (search @config nil)))
         sort-char (if (= sort-field field-name)
                     (if (= sort-direction "asc") 
                       [:span.glyphicon.glyphicon-chevron-up.col-icon.pull-right] 
@@ -83,19 +82,22 @@
                        (if (:visible (:exceptionJson columns))
                         [:td.exceptionJson exceptionJson])]]))]))
 
-(defn pager []
-  [:nav.log-pager
-   [:ul.pagination
-    [:li [:a {:href "#" :aria-label "Previous"} "<<"] ]
-    [:li [:a {:href "#" :aria-label "Next"} ">>"]]
-    ]
-   ])
+(defn pager 
+  [config]
+  (let [on-click #(do (.preventDefault %1) 
+                      (swap! config update-in [:page-num] %2)
+                      (search @config nil))
+        inc-page #(on-click % inc)
+        dec-page #(on-click % dec)]
+    [:nav.log-pager
+     [:ul.pagination
+      [:li [:a {:href "#" :aria-label "Previous" :on-click inc-page} "<<"] ]
+      [:li [:a {:href "#" :aria-label "Next" :on-click dec-page} ">>"]]]]))
 
 (defn log-table [logs config]
   [:div.log-table
    [:div.container-fluid
     [table-filter config]
     [table logs config]
-    [pager]]
-    ])
+    [pager config]]])
 

@@ -27,13 +27,14 @@
                         :sorting {:field :timestamp 
                                   :direction "desc"}
                         :page-size 100
-                        :page-number 1}]
+                        :page-num 0}]
     (reset! config default-config)))
 
 (defn get-config []
   (let [config (local-storage (atom {}) :config)]
     (if (empty? @config)
-      (set-default-config config))
+      (set-default-config config)
+      (swap! @config update-in [:page-num] 0))
     config))
 
 (render header "header")
@@ -41,7 +42,7 @@
 (defroute home-path "/" []
   (let [content (.getElementById js/document "content")
         config (get-config)]
-    (search config #(reagent/render-component [log-table % config] content))))
+    (search @config #(reagent/render-component [log-table % config] content))))
 
 (defroute log-path "/logs/:id" [id]
   (render page-not-found "content"))

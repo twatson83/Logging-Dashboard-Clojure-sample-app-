@@ -7,12 +7,12 @@
 
 (defn search
   [config cb]
-  (let [sort-config (:sorting @config)]
+  (let [sort-config (:sorting config)]
     (server/chsk-send! 
      [:logs/search {:query  {:match_all {}} 
                     :sort   {(:field sort-config) (:direction sort-config)} 
-                    :from   0 
-                    :size   100}] 
+                    :from   (* (:page-size config) (:page-num config)) 
+                    :size   (:page-size config)}] 
      10000
      (fn [cb-reply] 
        (do (reset! logs cb-reply)
