@@ -1,16 +1,14 @@
 (ns logging-dashboard.server
   (:require-macros
-   [cljs.core.async.macros   :as asyncm :refer (go go-loop)])
+   [cljs.core.async.macros :as asyncm :refer (go go-loop)])
   (:import [goog.history Html5History EventType])
   (:require
-   [goog.events :as events]
+   [goog.events            :as events]
    [goog.history.EventType :as EventType]
-   [secretary.core :as secretary]
-   [cljs.core.async          :as async  :refer (<! >! put! chan)]
-   [taoensso.encore          :as enc    :refer (tracef debugf infof warnf errorf)]
-   [taoensso.sente           :as sente  :refer (cb-success?)]))
-
-(debugf "Connecting to server")
+   [secretary.core         :as secretary]
+   [cljs.core.async        :as async  :refer (<! >! put! chan)]
+   [taoensso.encore        :as enc    :refer (tracef debugf infof warnf errorf)]
+   [taoensso.sente         :as sente  :refer (cb-success?)]))
 
 (let [rand-chsk-type (if (>= (rand) 0.5) :ajax :auto)
       {:keys [chsk ch-recv send-fn state]}
@@ -24,13 +22,10 @@
 (defmulti event-msg-handler :id)
 
 (defn event-msg-handler* [{:as ev-msg :keys [id ?data event]}]
-  ;(debugf "Event: %s" event)
   (event-msg-handler ev-msg))
 
 (defmethod event-msg-handler :default 
-  [{:as ev-msg :keys [event]}]
-  ;(debugf "Unhandled event: %s" event)
-  )
+  [{:as ev-msg :keys [event]}])
 
 (defn get-token []
   (str js/window.location.pathname js/window.location.search))
@@ -55,10 +50,9 @@
       (.setEnabled true))))
 
 (defmethod event-msg-handler :chsk/state
-        [{:as ev-msg :keys [?data]}]
-        (if (= (get ?data :first-open?) true)
-          (init)
-          ))
+  [{:as ev-msg :keys [?data]}]
+  (if (= (get ?data :first-open?) true)
+    (init)))
       
 (defmethod event-msg-handler :some/broadcast
   [{:as ev-msg :keys [?data]}]
