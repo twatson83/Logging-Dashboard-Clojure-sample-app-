@@ -1,6 +1,7 @@
 (ns logging-dashboard.components.log_table
-  (:require [reagent.core                  :as reagent :refer [render-component]]
-            [reagent-modals.modals         :as reagent-modals]
+  (:require [reagent.core                  :as reagent :refer [atom render-component]]
+            [reagent-forms.core            :refer [bind-fields]]
+            [reagent-modals.modals         :as reagent-modals :refer [modal! modal-window]]
             [logging-dashboard.datetime    :as datetime]
             [taoensso.encore               :as enc :refer (tracef debugf infof warnf errorf)]
             [logging-dashboard.models.logs         :refer [search]]))
@@ -29,10 +30,24 @@
 
 (defn settings-modal
   [config]
-  [:form
-   [:div.form-group
-    [:label "Page Size"]
-    [:input.form-control {:type "number" :value (:page-size @config)}]]])
+  (let [doc (atom {:page-size (:page-size @config)})]
+    (fn []
+      [:div
+       [:div.modal-header
+        [:button.close {:type "button" :data-dismiss "modal" :aira-label "Close"} 
+         [:span {:aria-hidden "true"} "x"]]
+        [:h4.modal-title "Settings"]]
+       [:div.modal-body
+        [:form
+         [:div.form-group
+          [:label "Page Size"]
+          [bind-fields [:input.form-control {:field :numeric :id :page-size}] doc]]]]
+       [:div.modal-footer
+        [:button.btn.btn-default {:type "button" :data-dismiss "modal" 
+                                  :on-click #(let [page-size (:page-size @doc)]
+                                                (if (> page-size 0) 
+                                                  (swap! config assoc :page-size (:page-size @doc))
+                                                  (.stopPropagation %)))} "Save"]]])))
 
 (defn settings 
   [config]

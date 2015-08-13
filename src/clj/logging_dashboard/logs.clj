@@ -7,7 +7,7 @@
             [clojure.pprint :as pp]))
 
 (def conn 
-  (esr/connect "http://ruffer-bpwfs-d:9200" {:conn-timeout 5000}))
+  (esr/connect "http://localhost:9200" {:conn-timeout 5000}))
 
 (defn search 
   [& {:as params}]
@@ -24,17 +24,3 @@
 (defn insert
   [doc]
   (esd/create conn "logs" "log" doc))
-
-
-(defn setup-tests
-  []
-  (do (insert {:level "Info"  :message "im an info message" :application "App1" :service "Service1" :exceptionJSON "" :timestamp "2012-03-11T02:19:00"})
-      (insert {:level "Error" :message "im an error message" :application "App2" :service "Service2" :exceptionJson "" :timestamp "2012-03-11T02:19:00"})))
-
-(defn search-test
-  []
-  (pp/pprint (search :query  {:match_all{}} 
-                     :sort   {:level "asc"} 
-                     :from   0 
-                     :size   10 
-                     :filter {:term {:level "info"}})))
