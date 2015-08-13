@@ -5,16 +5,14 @@
             [logging-dashboard.components.log_table :refer [log-table]]
             [logging-dashboard.components.errors    :refer [page-not-found]]
             [logging-dashboard.config               :refer [get-config]]
-            [taoensso.encore                        :refer (tracef debugf infof warnf errorf)]
-            [reagent.core             :as reagent]))
+            [reagent.core                           :as reagent        :refer [render-component]]))
 
-(reagent/render-component [header] (.getElementById js/document "header"))
+(render-component [header] (.getElementById js/document "header"))
 
 (defroute home-path "/" []
   (let [content (.getElementById js/document "content")
         config (get-config)]
-    (search @config #(reagent/render-component [log-table % config] content))))
+    (search @config #(render-component [log-table % config] content))))
 
 (defroute "*" []
-  (reagent/render-component [page-not-found] (.getElementById js/document "content")))
-
+  (render-component [page-not-found] (.getElementById js/document "content")))

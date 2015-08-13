@@ -17,6 +17,7 @@
                  [com.taoensso/sente "1.5.0"]
                  [reagent "0.5.0"]
                  [alandipert/storage-atom "1.2.4"]
+                 [org.clojars.frozenlock/reagent-modals "0.2.3"]
                  ]
   :plugins [[lein-ring "0.8.13"]
             [lein-cljsbuild "1.0.6"]

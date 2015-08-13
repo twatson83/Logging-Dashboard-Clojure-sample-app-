@@ -1,5 +1,6 @@
 (ns logging-dashboard.components.log_table
-  (:require [reagent.core                  :as reagent]
+  (:require [reagent.core                  :as reagent :refer [render-component]]
+            [reagent-modals.modals         :as reagent-modals]
             [logging-dashboard.datetime    :as datetime]
             [taoensso.encore               :as enc :refer (tracef debugf infof warnf errorf)]
             [logging-dashboard.models.logs         :refer [search]]))
@@ -26,10 +27,25 @@
                                :checked visible
                                :on-change on-change} (:label v)]]]]))]]))
 
-(defn table-filter [config]
+(defn settings-modal
+  [config]
+  [:form
+   [:div.form-group
+    [:label "Page Size"]
+    [:input.form-control {:type "number" :value (:page-size @config)}]]])
+
+(defn settings 
+  [config]
+  [:a.btn.btn-default.btn-sm.pull-right {:href "#" 
+                                         :on-click #(reagent-modals/modal! [settings-modal config])}
+   [:span.glyphicon.glyphicon-cog]])
+
+(defn table-filter 
+  [config]
   [:div.log-filter.row
    [:div.col-md-12
-    [column-picker config]]])
+    [column-picker config]
+    [settings config]]])
 
 (defn table-header 
   [field-name {:keys [label]} config]
@@ -98,4 +114,5 @@
    [:div.container-fluid
     [table-filter config]
     [table logs config]
-    [pager config logs]]])
+    [pager config logs]]
+   [reagent-modals/modal-window]])
