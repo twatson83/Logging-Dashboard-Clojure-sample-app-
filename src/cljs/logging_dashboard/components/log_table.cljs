@@ -29,7 +29,7 @@
               on-change (fn [e]
                           (swap! config assoc-in [:columns k :visible] 
                                  (not (get-in @config [:columns k :visible]))))]
-          ^{:key v}[:li 
+          ^{:key (str "cp" v)}[:li 
                     [:div.checkbox 
                      [:label 
                       [:input {:type "checkbox"
@@ -102,6 +102,7 @@
       [:a.btn.btn-default.btn-sm.pull-right.log-table-button 
        {:href "#" :on-click on-click}
        [:span.glyphicon.glyphicon-refresh {:class (if @spin "spin")}]])))
+
 (defn table-filter 
   [config]
   [:div.log-filter.row
@@ -128,12 +129,13 @@
     [:th [:a {:href "#" :class field-name :on-click on-click} label] sort-char]))
 
 (defn table [logs config]
-  (let [columns (:columns @config)]
+  (let [columns (:columns @config)
+        id (atom 0)]
     [:table.table.table-bordered.table-hover.table-condensed
      [:thead
       [:tr
        (for [[k v] columns]
-         (if (:visible v) ^{:key k} [table-header k v config]))]]
+         (if (:visible v) ^{:key (str "th" k)} [table-header k v config]))]]
      [:tbody
       (for [log (get @logs :hits)]
         (let [{:keys [timestamp level message application service exceptionJson]} log
@@ -141,7 +143,7 @@
                      (= (clojure.string/lower-case level) "error") "danger"
                      (= (clojure.string/lower-case level) "warn")  "warning"
                      :else "")]
-          ^{:key log} [:tr {:class class}
+          ^{:key (str "log_" (swap! id inc))} [:tr {:class class}
                        (if (get-in columns [:timestamp :visible])
                          [:td.timestamp (datetime/format :MEDIUM_DATETIME timestamp)]) 
                        (if (get-in columns [:level :visible])
