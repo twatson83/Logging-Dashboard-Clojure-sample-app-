@@ -53,6 +53,20 @@
   (and (validate-page-size (:page-size @doc))
        (validate-refresh-interval (:refresh-interval @doc))))
 
+(defn filters-modal
+  [config]
+  (let [filters (atom (:filters @config))]
+    (fn []
+      [:div
+       [:div.modal-header
+        [:button.close {:type "button" :data-dismiss "modal" :aira-label "Close"} 
+         [:span {:aria-hidden "true"} "x"]]
+        [:h4.modal-title "Filter Builder"]]
+       [:div.modal-body]
+       [:div.modal-footer
+        [:button.btn.btn-default {:type "button"
+                                  :on-click #(do (debugf "Save") (close-modal!))} "Save"]]])))
+
 (defn settings-modal
   [config]
   (let [doc (atom {:page-size (:page-size @config) :refresh-interval (:refresh-interval @config)})]
@@ -91,6 +105,13 @@
                                                                          (reagent-modals/modal! [settings-modal config]))}
    [:span.glyphicon.glyphicon-cog]])
 
+(defn filters 
+  [config]
+  [:a.btn.btn-default.btn-sm.pull-right.log-table-button {:href "#" 
+                                                          :on-click #(do (.preventDefault %)
+                                                                         (reagent-modals/modal! [filters-modal config]))}
+   "Filters"])
+
 (defn refresh 
   [config]
   (let [spin (atom false)
@@ -109,7 +130,8 @@
    [:div.col-md-12
     [column-picker config]
     [settings config]
-    [refresh config]]])
+    [refresh config]
+    [filters config]]])
 
 (defn table-header 
   [field-name {:keys [label]} config]
