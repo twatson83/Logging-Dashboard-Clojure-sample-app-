@@ -10,7 +10,7 @@
              :service       {:label "Service" :visible true}
              :exceptionJson {:label "Exception" :visible true}}
    :sorting {:field :timestamp :direction "desc"}
-   :page-size 100 :page-num 0})
+   :page-size 100 :page-num 0 :refresh-interval 0})
 
 (def config (local-storage (atom default-config) :config))
 

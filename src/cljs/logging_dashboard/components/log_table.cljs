@@ -1,10 +1,18 @@
 (ns logging-dashboard.components.log_table
   (:require [reagent.core                  :as reagent :refer [atom render-component]]
             [reagent-forms.core            :refer [bind-fields]]
-            [reagent-modals.modals         :as reagent-modals :refer [modal! modal-window]]
+            [reagent-modals.modals         :as reagent-modals :refer [modal! modal-window close-modal!]]
             [logging-dashboard.datetime    :as datetime]
+            [logging-dashboard.timer       :as timer :refer [stop-timer create-timer]]
             [taoensso.encore               :as enc :refer (tracef debugf infof warnf errorf)]
             [logging-dashboard.models.logs         :refer [search]]))
+
+(defn start-refresh 
+  [config]
+  (let [refresh-period (:refresh-interval @config)]
+    (if (or (nil? refresh-period) (= refresh-period 0))
+      (stop-timer)
+      (create-timer #(search @config nil) refresh-period))))
 
 (defn column-picker 
   [config]
@@ -28,9 +36,26 @@
                                :checked visible
                                :on-change on-change} (:label v)]]]]))]]))
 
+(defn validate-page-size
+  [page-size]
+  (and (not (nil? page-size)) 
+       (not= "" page-size)
+       (> page-size 0)))
+
+(defn validate-refresh-interval
+  [refresh-interval]
+  (and (not (nil? refresh-interval)) 
+       (not= "" refresh-interval)
+       (>= refresh-interval 0)))
+
+(defn validate-doc 
+  [doc]
+  (and (validate-page-size (:page-size @doc))
+       (validate-refresh-interval (:refresh-interval @doc))))
+
 (defn settings-modal
   [config]
-  (let [doc (atom {:page-size (:page-size @config)})]
+  (let [doc (atom {:page-size (:page-size @config) :refresh-interval (:refresh-interval @config)})]
     (fn []
       [:div
        [:div.modal-header
@@ -39,28 +64,51 @@
         [:h4.modal-title "Settings"]]
        [:div.modal-body
         [:form
-         [:div.form-group
-          [:label "Page Size"]
-          [bind-fields [:input.form-control {:field :numeric :id :page-size}] doc]]]]
+         [:div.form-group {:class (if (not (validate-page-size (:page-size @doc))) "has-error")}
+          [:label.control-label {:for "page-size"} "Page Size"]
+          [bind-fields [:input.form-control {:field :numeric :id :page-size}] doc]
+          [:span.error-message "Page size must be greater than 0."]]
+         [:div.form-group {:class (if (not (validate-refresh-interval (:refresh-interval @doc)))  "has-error")}
+          [:label.control-label {:for "refresh-interval"} "Refresh Interval (seconds)"]
+          [bind-fields [:input.form-control {:field :numeric :id :refresh-interval
+                                             :in-fn #(/ % 1000)
+                                             :out-fn #(* % 1000)}] doc]
+          [:span.error-message "Refresh interval must greater than or equal to 0."]]]]
        [:div.modal-footer
-        [:button.btn.btn-default {:type "button" :data-dismiss "modal" 
-                                  :on-click #(let [page-size (:page-size @doc)]
-                                                (if (> page-size 0) 
-                                                  (swap! config assoc :page-size (:page-size @doc))
-                                                  (.stopPropagation %)))} "Save"]]])))
+        [:button.btn.btn-default {:type "button"
+                                  :on-click #(let [{:keys [page-size refresh-interval]} @doc]
+                                               (if (validate-doc doc)
+                                                 (do (swap! config assoc :page-size page-size 
+                                                                         :refresh-interval refresh-interval)
+                                                     (search @config nil)
+                                                     (start-refresh config)
+                                                     (close-modal!))))} "Save"]]])))
 
 (defn settings 
   [config]
-  [:a.btn.btn-default.btn-sm.pull-right {:href "#" 
-                                         :on-click #(reagent-modals/modal! [settings-modal config])}
+  [:a.btn.btn-default.btn-sm.pull-right.log-table-button {:href "#" 
+                                                          :on-click #(do (.preventDefault %)
+                                                                         (reagent-modals/modal! [settings-modal config]))}
    [:span.glyphicon.glyphicon-cog]])
 
+(defn refresh 
+  [config]
+  (let [spin (atom false)
+        disable-spin #(reset! spin false)
+        on-click #(do (reset! spin true) 
+                      (.preventDefault %) 
+                      (search @config disable-spin))]
+    (fn []
+      [:a.btn.btn-default.btn-sm.pull-right.log-table-button 
+       {:href "#" :on-click on-click}
+       [:span.glyphicon.glyphicon-refresh {:class (if @spin "spin")}]])))
 (defn table-filter 
   [config]
   [:div.log-filter.row
    [:div.col-md-12
     [column-picker config]
-    [settings config]]])
+    [settings config]
+    [refresh config]]])
 
 (defn table-header 
   [field-name {:keys [label]} config]
@@ -124,7 +172,8 @@
       [:li [:a {:href "#" :aria-label "Next" 
                 :on-click (if (< (* (+ 1 page-num) page-size) num-of-logs) inc-page prevent-default)} ">>"]]]]))
 
-(defn log-table [logs config]
+(defn log-table 
+  [logs config]
   [:div.log-table
    [:div.container-fluid
     [table-filter config]
