@@ -1,52 +1,36 @@
 (ns logging-dashboard.components.log_table
-  (:require [reagent.core                  :as reagent :refer [atom render-component]]
+  (:require [reagent.core                  :as reagent :refer [render-component]]
             [reagent-forms.core            :refer [bind-fields]]
             [reagent-modals.modals         :as reagent-modals :refer [modal! modal-window close-modal!]]
             [logging-dashboard.datetime    :as datetime]
+            [logging-dashboard.config      :refer [config validate-page-size validate-refresh-interval]]
             [logging-dashboard.timer       :as timer :refer [stop-timer create-timer]]
             [taoensso.encore               :as enc :refer (tracef debugf infof warnf errorf)]
             [logging-dashboard.models.logs         :refer [search]]))
 
-(defn start-refresh 
-  [config]
-  (let [refresh-period (:refresh-interval @config)]
-    (if (or (nil? refresh-period) (= refresh-period 0))
-      (stop-timer)
-      (create-timer #(search @config nil) refresh-period))))
+(defn start-refresh-interval
+  [refresh-period]
+  (if (or (nil? refresh-period) (= refresh-period 0))
+    (stop-timer)
+    (create-timer #(search nil) refresh-period)))
 
 (defn column-picker 
-  [config]
-  (let [columns (:columns @config)]
-    [:div.btn-group.column-picker
-     [:button.btn.btn-default.btn-sm.dropdown-toggle {:type "button"
-                                                      :data-toggle "dropdown"
-                                                      :aria-haspopup "true"
-                                                      :aria-expanded "false"} "Columns "
-      [:span.caret]]
-     [:ul.dropdown-menu 
-      (for [[k v] columns]
-        (let [visible (:visible v)
-              on-change (fn [e]
-                          (swap! config assoc-in [:columns k :visible] 
-                                 (not (get-in @config [:columns k :visible]))))]
-          ^{:key (str "cp" v)}[:li 
-                    [:div.checkbox 
-                     [:label 
-                      [:input {:type "checkbox"
-                               :checked visible
-                               :on-change on-change} (:label v)]]]]))]]))
-
-(defn validate-page-size
-  [page-size]
-  (and (not (nil? page-size)) 
-       (not= "" page-size)
-       (> page-size 0)))
-
-(defn validate-refresh-interval
-  [refresh-interval]
-  (and (not (nil? refresh-interval)) 
-       (not= "" refresh-interval)
-       (>= refresh-interval 0)))
+  [columns]
+  [:div.btn-group.column-picker
+   [:button.btn.btn-default.btn-sm.dropdown-toggle {:type "button"
+                                                    :data-toggle "dropdown"
+                                                    :aria-haspopup "true"
+                                                    :aria-expanded "false"} "Columns "
+    [:span.caret]]
+   [:ul.dropdown-menu 
+    (for [[k v] @columns]
+      (let [visible (:visible v)
+            on-change (fn [e] (swap! columns assoc-in [k :visible] (not (get-in @columns [k :visible]))))]
+        ^{:key (str "cp" v)}
+        [:li 
+         [:div.checkbox 
+          [:label 
+           [:input {:type "checkbox" :checked visible :on-change on-change} (:label v)]]]]))]])
 
 (defn validate-doc 
   [doc]
@@ -54,22 +38,20 @@
        (validate-refresh-interval (:refresh-interval @doc))))
 
 (defn filters-modal
-  [config]
-  (let [filters (atom (:filters @config))]
-    (fn []
-      [:div
-       [:div.modal-header
-        [:button.close {:type "button" :data-dismiss "modal" :aira-label "Close"} 
-         [:span {:aria-hidden "true"} "x"]]
-        [:h4.modal-title "Filter Builder"]]
-       [:div.modal-body]
-       [:div.modal-footer
-        [:button.btn.btn-default {:type "button"
-                                  :on-click #(do (debugf "Save") (close-modal!))} "Save"]]])))
+  [filters]
+  (fn []
+    [:div
+     [:div.modal-header
+      [:button.close {:type "button" :data-dismiss "modal" :aira-label "Close"} 
+       [:span {:aria-hidden "true"} "x"]]
+      [:h4.modal-title "Filter Builder"]]
+     [:div.modal-body]
+     [:div.modal-footer
+      [:button.btn.btn-default {:type "button" :on-click #(do (debugf "Save") (close-modal!))} "Save"]]]))
 
 (defn settings-modal
-  [config]
-  (let [doc (atom {:page-size (:page-size @config) :refresh-interval (:refresh-interval @config)})]
+  [table-settings]
+  (let [doc (atom {:page-size (:page-size @table-settings) :refresh-interval (:refresh-interval @table-settings)})]
     (fn []
       [:div
        [:div.modal-header
@@ -92,72 +74,75 @@
         [:button.btn.btn-default {:type "button"
                                   :on-click #(let [{:keys [page-size refresh-interval]} @doc]
                                                (if (validate-doc doc)
-                                                 (do (swap! config assoc :page-size page-size 
-                                                                         :refresh-interval refresh-interval)
-                                                     (search @config nil)
-                                                     (start-refresh config)
+                                                 (do (swap! table-settings assoc :page-size page-size 
+                                                                                 :refresh-interval refresh-interval)
+                                                     (search nil)
+                                                     (start-refresh-interval refresh-interval)
                                                      (close-modal!))))} "Save"]]])))
 
 (defn settings 
-  [config]
+  [table-settings]
   [:a.btn.btn-default.btn-sm.pull-right.log-table-button {:href "#" 
                                                           :on-click #(do (.preventDefault %)
-                                                                         (reagent-modals/modal! [settings-modal config]))}
+                                                                         (reagent-modals/modal! [settings-modal table-settings]))}
    [:span.glyphicon.glyphicon-cog]])
 
-(defn filters 
-  [config]
+(defn filter-builder
+  [filters]
   [:a.btn.btn-default.btn-sm.pull-right.log-table-button {:href "#" 
                                                           :on-click #(do (.preventDefault %)
-                                                                         (reagent-modals/modal! [filters-modal config]))}
+                                                                         (reagent-modals/modal! [filters-modal filters]))}
    "Filters"])
 
 (defn refresh 
-  [config]
+  []
   (let [spin (atom false)
         disable-spin #(reset! spin false)
         on-click #(do (reset! spin true) 
                       (.preventDefault %) 
-                      (search @config disable-spin))]
+                      (search disable-spin))]
     (fn []
       [:a.btn.btn-default.btn-sm.pull-right.log-table-button 
        {:href "#" :on-click on-click}
        [:span.glyphicon.glyphicon-refresh {:class (if @spin "spin")}]])))
 
 (defn table-filter 
-  [config]
+  [columns filters table-settings]
   [:div.log-filter.row
    [:div.col-md-12
-    [column-picker config]
-    [settings config]
-    [refresh config]
-    [filters config]]])
+    [column-picker columns]
+    [settings table-settings]
+    [refresh]
+    [filter-builder filters]]])
 
 (defn table-header 
-  [field-name {:keys [label]} config]
-  (let [sorting        (:sorting @config)
-        sort-field     (:field sorting)
-        sort-direction (:direction sorting)
+  [field-name {:keys [label]} sorting]
+  (let [sort-field     (:field @sorting)
+        sort-direction (:direction @sorting)
         on-click (fn [e]
                    (do 
                      (.preventDefault e)
-                     (swap! config update-in [:sorting] assoc :field field-name 
-                            :direction (if (= sort-direction "asc") "desc" "asc"))
-                     (search @config nil)))
+                     (swap! sorting assoc :field field-name :direction (if (= sort-direction "asc") "desc" "asc"))
+                     (search nil)))
         sort-char (if (= sort-field field-name)
                     (if (= sort-direction "asc") 
                       [:span.glyphicon.glyphicon-chevron-up.col-icon.pull-right] 
                       [:span.glyphicon.glyphicon-chevron-down.col-icon.pull-right]) "")]
     [:th [:a {:href "#" :class field-name :on-click on-click} label] sort-char]))
 
-(defn table [logs config]
-  (let [columns (:columns @config)
-        id (atom 0)]
+(defn table [logs columns sorting]
+  (let [id (atom 0)
+        timestamp-visible (get-in @columns [:timestamp :visible])
+        level-visible (get-in @columns [:level :visible])
+        message-visible (get-in @columns [:message :visible])
+        application-visible (get-in @columns [:application :visible])
+        service-visible (get-in @columns [:service :visible])
+        exceptionJson-visible (get-in @columns [:exceptionJson :visible])]
     [:table.table.table-bordered.table-hover.table-condensed
      [:thead
       [:tr
-       (for [[k v] columns]
-         (if (:visible v) ^{:key (str "th" k)} [table-header k v config]))]]
+       (for [[k v] @columns]
+         (if (:visible v) ^{:key (str "th" k)} [table-header k v sorting]))]]
      [:tbody
       (for [log (get @logs :hits)]
         (let [{:keys [timestamp level message application service exceptionJson]} log
@@ -165,42 +150,52 @@
                      (= (clojure.string/lower-case level) "error") "danger"
                      (= (clojure.string/lower-case level) "warn")  "warning"
                      :else "")]
-          ^{:key (str "log_" (swap! id inc))} [:tr {:class class}
-                       (if (get-in columns [:timestamp :visible])
-                         [:td.timestamp (datetime/format :MEDIUM_DATETIME timestamp)]) 
-                       (if (get-in columns [:level :visible])
-                         [:td.level level]) 
-                       (if (get-in columns [:message :visible])
-                         [:td.message message]) 
-                       (if (get-in columns [:application :visible])
-                         [:td.application application]) 
-                       (if (get-in columns [:service :visible])
-                         [:td.service service]) 
-                       (if (get-in columns [:exceptionJson :visible])
-                         [:td.exceptionJson exceptionJson])]))]]))
+          ^{:key (str "log_" (swap! id inc))} 
+          [:tr {:class class}
+           (if timestamp-visible     [:td.timestamp (datetime/format :MEDIUM_DATETIME timestamp)]) 
+           (if level-visible         [:td.level level]) 
+           (if message-visible       [:td.message message]) 
+           (if application-visible   [:td.application application]) 
+           (if service-visible       [:td.service service]) 
+           (if exceptionJson-visible [:td.exceptionJson exceptionJson])]))]]))
 
 (defn pager 
-  [config logs]
-  (let [prevent-default #(.preventDefault %)
-        on-click #(do (prevent-default %1) 
-                      (swap! config assoc :page-num (%2 (:page-num @config)))
-                      (search @config nil))
+  [settings logs]
+  (let [{:keys [page-num page-size]} @settings
+        num-of-logs (:number @logs)
+        on-click #(do (.preventDefault %1) 
+                      (swap! settings assoc :page-num (%2 page-num))
+                      (search nil))
         inc-page #(on-click % inc)
-        dec-page #(on-click % dec)
-        {:keys [page-num page-size]} @config
-        num-of-logs (:number @logs)]
+        dec-page #(on-click % dec)]
     [:nav.log-pager
      [:ul.pagination
       [:li [:a {:href "#" :aria-label "Previous" 
-                :on-click (if (> page-num 0) dec-page prevent-default)} "<<"] ]
+                :on-click (if (> page-num 0) dec-page #(.preventDefault %))} "<<"] ]
       [:li [:a {:href "#" :aria-label "Next" 
-                :on-click (if (< (* (+ 1 page-num) page-size) num-of-logs) inc-page prevent-default)} ">>"]]]]))
+                :on-click (if (-> page-num 
+                                  (+ 1) 
+                                  (* page-size) 
+                                  (< num-of-logs)) inc-page #(.preventDefault %))} ">>"]]]]))
+
+(defn add-watchers 
+  [columns table-settings sorting filters]
+  (add-watch columns :columns (fn [_ _ _ new-state] (swap! config assoc :columns new-state)))
+  (add-watch table-settings :table-settings (fn [_ _ _ new-state] (swap! config assoc :table-settings new-state)))
+  (add-watch sorting :sorting (fn [_ _ _ new-state] (swap! config assoc :sorting new-state)))
+  (add-watch filters :filters (fn [_ _ _ new-state] (swap! config assoc :filters new-state))))
 
 (defn log-table 
-  [logs config]
-  [:div.log-table
-   [:div.container-fluid
-    [table-filter config]
-    [table logs config]
-    [pager config logs]]
-   [reagent-modals/modal-window]])
+  [logs]
+  (let [columns        (reagent/atom (:columns        @config))
+        table-settings (reagent/atom (:table-settings @config))
+        filters        (reagent/atom (:filters        @config))
+        sorting        (reagent/atom (:sorting        @config))]
+    (add-watchers columns table-settings sorting filters)
+    (fn []
+      [:div.log-table
+       [:div.container-fluid
+        [table-filter columns filters table-settings]
+        [table logs columns sorting]
+        [pager table-settings logs]]
+       [reagent-modals/modal-window]])))

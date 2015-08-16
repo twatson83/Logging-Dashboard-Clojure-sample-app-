@@ -1,6 +1,4 @@
-(ns logging-dashboard.timer
-  (:require  [taoensso.encore               :as enc :refer (tracef debugf infof warnf errorf)])
-)
+(ns logging-dashboard.timer)
 
 (def timer (atom nil))
 
