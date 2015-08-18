@@ -19,6 +19,7 @@
                  [alandipert/storage-atom "1.2.4"]
                  [org.clojars.frozenlock/reagent-modals "0.2.3"]
                  [reagent-forms "0.5.5"]
+                 [cljs-flux "0.1.2"]
                  ]
   :plugins [[lein-ring "0.8.13"]
             [lein-cljsbuild "1.0.6"]

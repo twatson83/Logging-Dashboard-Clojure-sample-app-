@@ -1,4 +1,4 @@
-(ns logging-dashboard.server
+(ns logging-dashboard.utils.server
   (:require-macros
    [cljs.core.async.macros :as asyncm :refer (go go-loop)])
   (:import [goog.history Html5History EventType])
@@ -73,9 +73,4 @@
 
 (def router_ (atom nil))
 
-(defn stop-server-router! [] (when-let [stop-f @router_] (stop-f)))
-
-(defn start-server-router! []
-  (stop-server-router!)
-  (reset! router_ (sente/start-chsk-router! ch-chsk event-msg-handler*)))
-
+(reset! router_ (sente/start-chsk-router! ch-chsk event-msg-handler*))

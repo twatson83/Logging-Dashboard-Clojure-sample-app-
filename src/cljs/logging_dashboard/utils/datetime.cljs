@@ -1,4 +1,4 @@
-(ns logging-dashboard.datetime
+(ns logging-dashboard.utils.datetime
   (:require [goog.i18n.DateTimeFormat :as dtf]))
 
 (def format-map
