@@ -1,19 +1,10 @@
-# logging-dashboard
+# Logging Dashboard (Clojure sample app)
 
-FIXME
+This is an example Clojure/Clojurescript app I built to view logs stored in [ElasticSearch](https://www.elastic.co/products/elasticsearch.com). 
 
-## Prerequisites
-
-You will need [Leiningen][] 2.0.0 or above installed.
-
-[leiningen]: https://github.com/technomancy/leiningen
+The client side uses a [flux](http://facebook.github.io/flux/docs/overview.html#content) architecture and renders html using [reagent](https://github.com/reagent-project/reagent) which is an interface to [react](http://facebook.github.io/react/).
 
 ## Running
 
-To start a web server for the application, run:
-
-    lein ring server
-
-## License
-
-Copyright © 2015 FIXME
+    lein run 
+    lein cljsbuild once

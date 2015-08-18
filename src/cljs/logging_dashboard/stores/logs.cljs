@@ -20,6 +20,8 @@
      (fn [cb-reply] 
        (swap! logs assoc :hits (:hits cb-reply) :number (:number cb-reply) :searching false)))))
 
+;; callbacks
+
 (def update-sorting
   (register dispatcher/update-sorting
             (fn [& args]  
