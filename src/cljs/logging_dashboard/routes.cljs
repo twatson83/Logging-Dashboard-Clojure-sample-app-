@@ -10,8 +10,8 @@
 (render-component [header] (.getElementById js/document "header"))
 
 (defroute home-path "/" []
-  (do (dispatch dispatcher/logs-search nil) 
-      (render-component [log-dashboard] (.getElementById js/document "content"))))
+  (do (render-component [log-dashboard] (.getElementById js/document "content"))
+      (dispatch dispatcher/logs-search nil)))
 
 (defroute "*" []
   (render-component [page-not-found] (.getElementById js/document "content")))

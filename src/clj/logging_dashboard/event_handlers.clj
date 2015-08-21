@@ -25,18 +25,18 @@
       (thread (event-msg-handler data))
       (recur (<! ch-chsk)))))
 
-(defn start-broadcaster! []
-    (go-loop [i 0]
-      (<! (async/timeout 120000))
-      (debugf (format "Broadcasting server>user: %s" @connected-uids))
-      (doseq [uid (:any @connected-uids)]
-        (chsk-send! uid
-                    [:some/broadcast
-                     {:what-is-this "A broadcast pushed from server"
-                      :how-often    "Every 10 seconds"
-                      :to-whom uid
-                      :i i}]))
-      (recur (inc i))))
+;(defn start-broadcaster! []
+;(go-loop [i 0]
+;  (<! (async/timeout 120000))
+;  (debugf (format "Broadcasting server>user: %s" @connected-uids))
+;(doseq [uid (:any @connected-uids)]
+;(chsk-send! uid
+;[:some/broadcast
+;{:what-is-this "A broadcast pushed from server"
+; :how-often    "Every 10 seconds"
+; :to-whom uid
+; :i i}]))
+;(recur (inc i))))
 
 ; Incoming events
 

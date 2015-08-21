@@ -11,7 +11,12 @@
              :service       {:label "Service" :visible true}
              :exceptionJson {:label "Exception" :visible true}}
    :sorting {:field :timestamp :direction "desc"}
-   :filters {}
+   :filters {:id "1" :type :conjunction :operation :Or
+             :filters [{:id "2" :type :conjunction :operation :Or 
+                        :filters []}
+                       {:id "3" :type :conjunction :operation :And 
+                        :filters [{:id "4" :type :conjunction :operation :And
+                        :filters []}]}] }
    :table-settings {:page-size 100 :page-num 0 :refresh-interval 0}})
 
 (def config (local-storage (atom default-config) :config))
@@ -54,3 +59,4 @@
   (register dispatcher/update-filters
             (fn [filters]
               (swap! config assoc :filters filters))))
+

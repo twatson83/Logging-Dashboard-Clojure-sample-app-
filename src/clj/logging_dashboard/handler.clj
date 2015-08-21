@@ -38,5 +38,6 @@
         ring.middleware.params/wrap-params
         (wrap-defaults api-defaults))
     (event-handlers/event-loop)
-    (event-handlers/start-broadcaster!)))
+   ; (event-handlers/start-broadcaster!)
+    ))
 
