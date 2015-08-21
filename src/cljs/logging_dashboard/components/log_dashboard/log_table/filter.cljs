@@ -41,6 +41,31 @@
   [node]
   (conjunction node))
 
+(defmethod build-filter :equals
+  [node]
+  (debugf "equals")
+  [:div.inline.node "equals"])
+
+(defmethod build-filter :not-equals
+  [node]
+  (debugf "not equals")
+  [:div.inline.node "not equals"])
+
+(defmethod build-filter :contains
+  [node]
+  (debugf "contains")
+  [:div.inline.node "contains"])
+
+(defmethod build-filter :greater-than
+  [node]
+  (debugf "greater than")
+  [:div.inline.node "greater than"])
+
+(defmethod build-filter :less-than
+  [node]
+  (debugf "less than")
+  [:div.inline.node "less than"])
+
 (defn update-filter
   [new-state]
   (fn [filter]
