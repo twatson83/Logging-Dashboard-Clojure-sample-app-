@@ -119,3 +119,14 @@ body { padding-top: 70px; }
 .filters .item{
     padding-bottom: 10px;
 }
+.filters .dropdown-menu{
+    top: inherit; 
+    left: inherit; 
+}
+.filters .dropdown-menu>li>a{
+    padding: 1px 15px;
+    font-size: 11px;
+}
+.filters .dropdown-menu .divider {
+    margin: 4px 0;
+}

@@ -3,17 +3,43 @@
             [reagent-modals.modals            :as reagent-modals    :refer [modal! modal-window close-modal!]]
             [logging-dashboard.dispatcher     :as dispatcher]
             [cljs-flux.dispatcher             :refer [dispatch]]
+            [cljs-uuid-utils.core             :as uuid]
             [taoensso.encore                  :refer (tracef debugf infof warnf errorf)]))
+
+(defn filter-picker
+  [node]
+  [:div.filter-picker])
+
+(defn conjunction
+  [node]
+  (let [add-node (fn [e type] (do 
+                                (.preventDefault e) 
+                                (swap! node update-in [:filters] #(into % [{:type type :filters [] :id (uuid/make-random-uuid)}]))))]
+    [:div.inline.item
+     [:select.form-control.input-xs {:field :list :value (:type @node) :on-change #(swap! node assoc :type (-> % .-target .-value keyword)) }
+      [:option {:key :and :value :and} "And"]
+      [:option {:key :or :value :or} "Or"]]
+     [:a.dropdown-toggle {:href "#" :on-click #(.preventDefault %) :data-toggle "dropdown"} 
+      [:i.glyphicon.glyphicon-plus-sign.hand-cursor ]]
+     [:ul.dropdown-menu 
+      [:li [:a {:href "#" :on-click #(add-node % :and)} "And"]] 
+      [:li [:a {:href "#" :on-click #(add-node % :or)} "Or"]]
+      [:li.divider {:role "seperator"}]
+      [:li [:a {:href "#" :on-click #(add-node % :equals)} "Equals"]]
+      [:li [:a {:href "#" :on-click #(add-node % :not-equals)} "Not Equals"]]
+      [:li [:a {:href "#" :on-click #(add-node % :contains)} "Contains"]]
+      [:li [:a {:href "#" :on-click #(add-node % :greater-than)} "Greater Than"]]
+      [:li [:a {:href "#" :on-click #(add-node % :less-than)} "Less Than"]]]]))
 
 (defmulti build-filter #(:type @%))
 
-(defmethod build-filter :conjunction
+(defmethod build-filter :and
   [node]
-  [:div.inline.item
-   [:select.form-control.input-xs {:field :list :value (:operation @node) :on-change #(swap! node assoc :operation (-> % .-target .-value)) }
-    [:option {:key :and} "And"]
-    [:option {:key :or} "Or"]]
-   [:i.glyphicon.glyphicon-plus-sign.hand-cursor {:on-click #(debugf "Add")}]])
+  (conjunction node))
+
+(defmethod build-filter :or
+  [node]
+  (conjunction node))
 
 (defn update-filter
   [new-state]
