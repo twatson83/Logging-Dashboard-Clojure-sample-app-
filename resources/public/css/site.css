@@ -130,3 +130,9 @@ body { padding-top: 70px; }
 .filters .dropdown-menu .divider {
     margin: 4px 0;
 }
+.filters .fields {
+    width: 90px;
+}
+.filters .tab {
+    margin-bottom: 5px;
+}

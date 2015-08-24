@@ -11,4 +11,4 @@
     [column-picker columns]
     [settings table-settings]
     [refresh logs]
-    [filter-builder filters]]])
+    [filter-builder filters columns]]])

@@ -4,19 +4,14 @@
             [cljs-flux.dispatcher         :refer [register]]))
 
 (def default-config 
-  {:columns {:timestamp     {:label "Timestamp" :visible true}
-             :level         {:label "Level" :visible true}
-             :message       {:label "Message" :visible true}
-             :application   {:label "Application" :visible true}
-             :service       {:label "Service" :visible true}
-             :exceptionJson {:label "Exception" :visible true}}
+  {:columns {:timestamp     {:label "Timestamp"   :type :date   :visible true}
+             :level         {:label "Level"       :type :string :visible true}
+             :message       {:label "Message"     :type :string :visible true}
+             :application   {:label "Application" :type :string :visible true}
+             :service       {:label "Service"     :type :string :visible true}
+             :exceptionJson {:label "Exception"   :type :string :visible true}}
    :sorting {:field :timestamp :direction "desc"}
-   :filters {:id "1" :type :or 
-             :filters [{:id "2" :type :or 
-                        :filters []}
-                       {:id "3" :type :and 
-                        :filters [{:id "4" :type :and 
-                        :filters []}]}] }
+   :filters {:id "1" :type :and :filters [] }
    :table-settings {:page-size 100 :page-num 0 :refresh-interval 0}})
 
 (def config (local-storage (atom default-config) :config))

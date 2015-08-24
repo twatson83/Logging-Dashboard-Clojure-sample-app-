@@ -9,7 +9,8 @@
 (defn- search 
   [& args]
   (let [{:keys [field direction]} (:sorting @config-store/config)
-        {:keys [page-size page-num]} (:table-settings @config-store/config)]
+        {:keys [page-size page-num]} (:table-settings @config-store/config)
+        filters (:filters @config-store/config)]
     (swap! logs assoc :searching true)
     (server/chsk-send! 
      [:logs/search {:query  {:match_all {}} 
@@ -42,4 +43,3 @@
 
 (def logs-search
   (register dispatcher/logs-search search))
-
