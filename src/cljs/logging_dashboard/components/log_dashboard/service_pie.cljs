@@ -8,9 +8,11 @@
 
 (defn chart-config [] 
   {:chart {:type "pie"}
-   :title {:text "Services" }
+   :title {:text "Services"  :align "left" :floating true}
    :credits {:enabled false}
    :plotOptions {:pie {:showInLegend true :dataLabels {:enabled false}}}
+   :legend {:enabled true :layout "vertical" :align "right" 
+            :itemStyle {:fontSize "10px"} :itemWidth 140 :verticalAlign "middle"}
    :exporting {:enabled false}
    :series [{:name "services" :colorByPoint true :data (build-series)}]})
 
@@ -27,7 +29,7 @@
 (defn pie 
   [logs] 
   (reset! services (get-in @logs [:aggregations :services :buckets]))
-  [:div#service-pie {:style {:min-width "100%" :height "400px" :margin "0 auto"}}])
+  [:div#service-pie {:style {:min-width "100%" :height "300px" :margin "0 auto"}}])
 
 (defn service-pie
   [logs]

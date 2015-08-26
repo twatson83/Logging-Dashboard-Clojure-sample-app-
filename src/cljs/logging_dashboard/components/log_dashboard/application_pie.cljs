@@ -8,9 +8,11 @@
 
 (defn chart-config [] 
   {:chart {:type "pie"}
-   :title {:text "Applications" }
+   :title {:text "Applications" :align "left" :floating true} 
    :credits {:enabled false}
    :plotOptions {:pie {:showInLegend true :dataLabels {:enabled false}}}
+   :legend {:enabled true :layout "vertical" :align "right" 
+            :itemStyle {:fontSize "10px"} :itemWidth 140 :verticalAlign "middle"}
    :exporting {:enabled false}
    :series [{:name "applications" :colorByPoint true :data (build-series)}]})
 
@@ -27,7 +29,7 @@
 (defn pie 
   [logs] 
   (reset! applications (get-in @logs [:aggregations :applications :buckets]))
-  [:div#application-pie {:style {:min-width "100%" :height "400px" :margin "0 auto"}}])
+  [:div#application-pie {:style {:min-width "100%" :height "300px" :margin "0 auto"}}])
 
 (defn application-pie
   [logs]
