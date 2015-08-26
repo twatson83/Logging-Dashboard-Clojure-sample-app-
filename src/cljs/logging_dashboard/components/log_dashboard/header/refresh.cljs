@@ -1,4 +1,4 @@
-(ns logging-dashboard.components.log_dashboard.log_table.refresh
+(ns logging-dashboard.components.log_dashboard.header.refresh
   (:require [logging-dashboard.dispatcher     :as dispatcher]
             [cljs-flux.dispatcher             :refer [dispatch]]))
 

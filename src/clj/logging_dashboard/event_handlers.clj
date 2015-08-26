@@ -59,5 +59,6 @@
                             :sort  (get ?data :sort)
                             :aggregations {:applications (aggs/terms "Application.Exact")
                                            :services (aggs/terms "Service.Exact")
-                                           :levels (aggs/terms "Level.Exact")}))))
+                                           :levels (aggs/terms "Level.Exact")
+                                           :histogram (aggs/date-histogram "timestamp" "day")}))))
 

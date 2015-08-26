@@ -139,3 +139,7 @@ select.input-xs{
 .filters .tab {
     margin-bottom: 5px;
 }
+
+#content .table {
+    margin-bottom: 0;
+}

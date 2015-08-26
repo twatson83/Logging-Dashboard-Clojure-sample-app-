@@ -1,4 +1,4 @@
-(ns logging-dashboard.components.log_dashboard.log_table.filter
+(ns logging-dashboard.components.log_dashboard.header.filter
   (:require [reagent.core                     :as reagent           :refer [render-component]]
             [reagent-modals.modals            :as reagent-modals    :refer [modal! modal-window close-modal!]]
             [logging-dashboard.dispatcher     :as dispatcher]

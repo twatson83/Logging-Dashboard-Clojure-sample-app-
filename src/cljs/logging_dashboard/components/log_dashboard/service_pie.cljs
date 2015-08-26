@@ -29,7 +29,7 @@
 (defn pie 
   [logs] 
   (reset! services (get-in @logs [:aggregations :services :buckets]))
-  [:div#service-pie {:style {:min-width "100%" :height "300px" :margin "0 auto"}}])
+  [:div#service-pie {:style {:min-width "100%" :height "290px" :margin "0 auto"}}])
 
 (defn service-pie
   [logs]

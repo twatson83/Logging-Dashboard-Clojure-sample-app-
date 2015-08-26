@@ -8,8 +8,7 @@
   [columns table-settings filters sorting logs]
   [:div.log-table
    [:div.container-fluid
-    [header columns filters table-settings logs]
+    [header columns]
     [table logs columns sorting]
     [pager table-settings logs]]
    [reagent-modals/modal-window]])
-

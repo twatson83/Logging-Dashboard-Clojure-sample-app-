@@ -1,8 +1,10 @@
 (ns logging-dashboard.components.log_dashboard
   (:require [logging-dashboard.components.log_dashboard.log_table       :refer [log-table]]
             [logging-dashboard.components.log_dashboard.application_pie :refer [application-pie]]
+            [logging-dashboard.components.log_dashboard.log_histogram   :refer [log-histogram]]
             [logging-dashboard.components.log_dashboard.service_pie     :refer [service-pie]]
             [logging-dashboard.components.log_dashboard.level_table     :refer [level-table]]
+            [logging-dashboard.components.log_dashboard.header          :refer [header]]
             [cljs-flux.dispatcher                                 :refer [dispatch]]
             [reagent.core                                         :as reagent]
             [logging-dashboard.dispatcher                         :as dispatcher]
@@ -39,11 +41,12 @@
       (stop-timer)
       (create-timer #(if-not (:searching @logs) (dispatch dispatcher/logs-search nil)) (:refresh-interval @table-settings))
       [:div.container-fluid
+       [header columns filters table-settings logs]
+       [:div.row [:div.col-md-12 [log-histogram logs]]]
        [:div.row
         [:div.col-md-4 [application-pie logs]]
         [:div.col-md-4 [service-pie logs]]
-        [:div.col-md-4 [level-table logs]]
-        ]
+        [:div.col-md-4 [level-table logs]]]
        [:div.row
         [:div.col-md-12
          [log-table columns table-settings filters sorting logs]]]])))

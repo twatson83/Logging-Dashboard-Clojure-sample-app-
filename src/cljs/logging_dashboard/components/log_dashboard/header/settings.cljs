@@ -1,4 +1,4 @@
-(ns logging-dashboard.components.log_dashboard.log_table.settings
+(ns logging-dashboard.components.log_dashboard.header.settings
   (:require [logging-dashboard.stores.config  :as config-store      :refer [validate-page-size validate-refresh-interval]]
             [reagent-modals.modals            :as reagent-modals    :refer [modal! modal-window close-modal!]]
             [logging-dashboard.dispatcher     :as dispatcher]
