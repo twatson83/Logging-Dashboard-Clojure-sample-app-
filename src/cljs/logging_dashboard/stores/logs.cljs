@@ -2,6 +2,7 @@
   (:require [logging-dashboard.utils.server  :as server]
             [logging-dashboard.stores.config :as config-store]
             [logging-dashboard.dispatcher    :as dispatcher]
+            [taoensso.encore                  :refer (tracef debugf infof warnf errorf)]
             [cljs-flux.dispatcher            :refer [register wait-for]]))
 
 (def logs (atom {:searching false}))
@@ -19,7 +20,7 @@
                     :size   page-size}] 
      10000
      (fn [cb-reply] 
-       (swap! logs assoc :hits (:hits cb-reply) :number (:number cb-reply) :searching false)))))
+       (swap! logs assoc :hits (:hits cb-reply) :number (:number cb-reply) :aggregations (:aggregations cb-reply) :searching false)))))
 
 ;; callbacks
 

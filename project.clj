@@ -39,6 +39,7 @@
                            :output-to  "resources/public/js/logging-dashboard.js"
                            :source-map "resources/public/js/logging-dashboard.js.map"
                            :closure-warnings {:non-standard-jsdoc :off}
-                           :optimizations :advanced
+                           :optimizations :whitespace
+                           :externs ["externs.js"]
                            :pretty-print true}}]})
 

@@ -18,9 +18,24 @@
      (for [[k v] @columns]
        [:option {:key (str id k) :value k} (:label v)])]))
 
+(defn date-input
+  [node]
+  [:span [:input.form-control.input-xs {:class (str (:id @node) "_picker") :type "text" :value (:value @node) :on-change #(debugf %)}]])
+
+(defn date-will-unmount
+  [node]
+  (.destroy (.data (.datetimepicker (js/$ (str "." (:id @node) "_picker"))) "DateTimePicker")))
+
+(defn date-did-mount
+  [node]
+  (let [date-picker (.datetimepicker (js/$ (str "." (:id @node) "_picker")) (clj->js {:format "DD/MM/YYYY HH:mm:ss"}))]
+    (.on date-picker "dp.change" #(swap! node assoc :value (.format (.-date %) "DD/MM/YYYY HH:mm:ss")))))
+
 (defmethod field-input :date
   [_ node]
-  [:span [:input.form-control.input-xs {:field :text :value (:value @node) :on-change #(swap! node assoc :value (-> % .-target .-value))}]])
+  (reagent/create-class {:reagent-render #(date-input node)
+                         :component-did-mount #(date-did-mount node)
+                         :component-will-unmount #(date-will-unmount node)}))
 
 (defmethod field-input :string
   [_ node]

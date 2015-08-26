@@ -1,5 +1,7 @@
 (ns logging-dashboard.components.log_dashboard
   (:require [logging-dashboard.components.log_dashboard.log_table :refer [log-table]]
+            [logging-dashboard.components.log_dashboard.application_pie :refer [application-pie]]
+            [logging-dashboard.components.log_dashboard.service_pie :refer [service-pie]]
             [cljs-flux.dispatcher                                 :refer [dispatch]]
             [reagent.core                                         :as reagent]
             [logging-dashboard.dispatcher                         :as dispatcher]
@@ -8,11 +10,10 @@
 
 (defn watch-state 
   [columns table-settings filters sorting logs]
-  (add-watch config-store/config :config (fn [_ _ _ new-state] (do 
-                                                                 (reset! filters (:filters new-state))
-                                                                 (reset! columns (:columns new-state))
-                                                                 (reset! table-settings (:table-settings new-state))
-                                                                 (reset! sorting (:sorting new-state)))))
+  (add-watch config-store/config :config (fn [_ _ _ new-state] (do (reset! filters (:filters new-state))
+                                                                   (reset! columns (:columns new-state))
+                                                                   (reset! table-settings (:table-settings new-state))
+                                                                   (reset! sorting (:sorting new-state)))))
   (add-watch logs-store/logs :logs (fn [_ _ _ new-state] (reset! logs new-state))))
 
 (def timer (atom nil))
@@ -36,4 +37,11 @@
       (watch-state columns table-settings filters sorting logs)
       (stop-timer)
       (create-timer #(if-not (:searching @logs) (dispatch dispatcher/logs-search nil)) (:refresh-interval @table-settings))
-      [log-table columns table-settings filters sorting logs])))
+      [:div.container-fluid
+       [:div.row
+        [:div.col-md-4]
+        [:div.col-md-4 [service-pie logs]]
+        [:div.col-md-4 [application-pie logs]]]
+       [:div.row
+        [:div.col-md-12
+         [log-table columns table-settings filters sorting logs]]]])))

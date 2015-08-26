@@ -13,8 +13,9 @@
   [& {:as params}]
   (let [res  (apply esd/search conn "logs" "log" (apply concat params))
         hits (into [] (map #(get % :_source) (esrsp/hits-from res)))
-        n    (esrsp/total-hits res)]
-    {:number n :hits hits}))
+        n    (esrsp/total-hits res)
+        aggs (esrsp/aggregations-from res)]
+    {:number n :hits hits :aggregations aggs}))
 
 (defn create-index
   []
