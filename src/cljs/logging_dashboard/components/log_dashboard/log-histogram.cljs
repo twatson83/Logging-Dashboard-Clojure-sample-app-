@@ -12,6 +12,7 @@
    :credits {:enabled false}
    :legend {:enabled false}
    :xAxis {:type "datetime"}
+   :yAxis {:maxPadding 0 :endOnTick false}
    :exporting {:enabled false}
    :series [{:name "logs" :data (build-series)}]})
 
@@ -28,7 +29,7 @@
 (defn pie 
   [logs] 
   (reset! histogram (get-in @logs [:aggregations :histogram :buckets]))
-  [:div#histogram {:style {:min-width "100%" :height "290px" :margin "0 auto"}}])
+  [:div#histogram {:style {:min-width "100%" :height "200px" :margin "0 auto"}}])
 
 (defn log-histogram
   [logs]

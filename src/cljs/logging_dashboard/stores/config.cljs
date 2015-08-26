@@ -11,7 +11,7 @@
              :service       {:label "Service"     :type :string :visible true}
              :exceptionJson {:label "Exception"   :type :string :visible true}}
    :sorting {:field :timestamp :direction "desc"}
-   :filters {:id "1" :type :and :filters [] }
+   :filters {:id "1" :type :and :filters [{:id "2" :type :last-timespan :value 3600}] }
    :table-settings {:page-size 100 :page-num 0 :refresh-interval 0}})
 
 (def config (local-storage (atom default-config) :config))

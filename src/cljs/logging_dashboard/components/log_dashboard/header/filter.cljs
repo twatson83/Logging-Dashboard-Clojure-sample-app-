@@ -79,6 +79,28 @@
   [node _]
   (conjunction node))
 
+(defmethod build-filter :date-range
+  [node columns]
+  (debugf "Date Range"))
+
+(defmethod build-filter :last-timespan
+  [node columns]
+  [:div.inline.item
+   [:span.filter-type-label "Last "]
+   [:select.form-control.input-xs.fields {:field :list :value (:value @node) 
+                                          :on-change #(swap! node assoc :value (-> % .-target .-value)) }
+    [:option {:value 300} "5 Mins"]
+    [:option {:value 600} "10 Mins"]
+    [:option {:value 1800} "30 Mins"]
+    [:option {:value 3600} "1 hour"]
+    [:option {:value 7200} "2 hour"]
+    [:option {:value 14400} "4 hour"]
+    [:option {:value 28800} "8 hour"]
+    [:option {:value 86400} "1 day"]
+    [:option {:value 604800} "7 day"]
+    [:option {:value 2592000} "30 day"]
+    [:option {:value 31471985} "1 year"]]])
+
 (defmethod build-filter :equals
   [node columns]
   (let [type (:type (first (vals (select-keys @columns [(:field @node)]))))]

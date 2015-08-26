@@ -49,11 +49,16 @@
     (when ?reply-fn
       (?reply-fn {:umatched-event-as-echoed-from-server event}))))
 
+(defn build-query 
+  [filters]
+  (debugf "%s" filters) 
+  {:match_all {}})
+
 (defmethod event-msg-handler :logs/search
   [{:as ev-msg :keys [event id ?data ring-req ?reply-fn send-fn]}]
   (do
     (debugf "Fetching logs")
-    (?reply-fn (logs/search :query (get ?data :query) 
+    (?reply-fn (logs/search :query (build-query (get ?data :filters)) 
                             :from  (get ?data :from)
                             :size  (get ?data :size)
                             :sort  (get ?data :sort)

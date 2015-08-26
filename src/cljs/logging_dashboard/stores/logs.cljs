@@ -14,7 +14,7 @@
         filters (:filters @config-store/config)]
     (swap! logs assoc :searching true)
     (server/chsk-send! 
-     [:logs/search {:query  {:match_all {}} 
+     [:logs/search {:filters filters
                     :sort   {field direction} 
                     :from   (* page-size page-num) 
                     :size   page-size}] 
