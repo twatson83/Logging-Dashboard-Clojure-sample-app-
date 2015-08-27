@@ -1,6 +1,7 @@
 (ns logging-dashboard.stores.config
   (:require [alandipert.storage-atom      :refer [local-storage]]
             [logging-dashboard.dispatcher :as    dispatcher]
+            [taoensso.encore                  :refer (tracef debugf infof warnf errorf)]
             [cljs-flux.dispatcher         :refer [register]]))
 
 (def default-config 
@@ -55,3 +56,7 @@
             (fn [filters]
               (swap! config assoc :filters filters))))
 
+(def reset-config 
+  (register dispatcher/reset-config
+            (fn [_]
+              (reset! config default-config))))

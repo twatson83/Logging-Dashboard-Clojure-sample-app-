@@ -42,5 +42,11 @@
               (wait-for dispatcher/update-filters [config-store/update-filters])
               (search))))
 
+(def reset-config
+  (register dispatcher/reset-config
+            (fn [& args]  
+              (wait-for dispatcher/reset-config [config-store/reset-config])
+              (search))))
+
 (def logs-search
   (register dispatcher/logs-search search))

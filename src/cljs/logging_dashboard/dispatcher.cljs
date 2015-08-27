@@ -6,3 +6,4 @@
 (def update-settings (dispatcher))
 (def update-filters  (dispatcher))
 (def logs-search     (dispatcher))
+(def reset-config    (dispatcher))

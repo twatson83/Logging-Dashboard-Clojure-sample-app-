@@ -30,7 +30,9 @@
           [bind-fields [:input.form-control {:field :numeric :id :refresh-interval
                                              :in-fn #(/ % 1000)
                                              :out-fn #(* % 1000)}] doc]
-          [:span.error-message "Refresh interval must greater than or equal to 0."]]]]
+          [:span.error-message "Refresh interval must greater than or equal to 0."]]
+         [:div.form-group [:a {:href "#" :on-click #(do (.preventDefault %) 
+                                                       (dispatch dispatcher/reset-config nil))} "Click here to reset settings and filters"]]]]
        [:div.modal-footer
         [:button.btn.btn-default {:type "button"
                                   :on-click #(let [{:keys [page-size refresh-interval]} @doc]
