@@ -19,31 +19,33 @@
        [:option {:key (str id k) :value k} (:label v)])]))
 
 (defn date-input
-  [node]
-  [:span [:input.form-control.input-xs {:class (str (:id @node) "_picker") :type "text" :value (:value @node) :on-change #(debugf %)}]])
+  [node prop]
+  [:span [:input.form-control.input-xs {:class (str (name prop) (:id @node) "_picker") :type "text" 
+                                        :value (if-not (nil? (prop @node)) (.format (.unix js/moment (/ (prop @node) 1000)) "DD/MM/YYYY HH:mm:ss")) 
+                                        :on-change #(debugf %)}]])
 
 (defn date-will-unmount
-  [node]
-  (.destroy (.data (.datetimepicker (js/$ (str "." (:id @node) "_picker"))) "DateTimePicker")))
+  [node prop]
+  (.destroy (.data (.datetimepicker (js/$ (str "." (name prop) (:id @node) "_picker"))) "DateTimePicker")))
 
 (defn date-did-mount
-  [node]
-  (let [date-picker (.datetimepicker (js/$ (str "." (:id @node) "_picker")) (clj->js {:format "DD/MM/YYYY HH:mm:ss"}))]
-    (.on date-picker "dp.change" #(swap! node assoc :value (.format (.-date %) "DD/MM/YYYY HH:mm:ss")))))
+  [node prop]
+  (let [date-picker (.datetimepicker (js/$ (str "." (name prop) (:id @node) "_picker")) (clj->js {:format "DD/MM/YYYY HH:mm:ss"}))]
+    (.on date-picker "dp.change" #(swap! node assoc prop (* 1000 (.unix (.-date %)))))))
 
 (defmethod field-input :date
-  [_ node]
-  (reagent/create-class {:reagent-render #(date-input node)
-                         :component-did-mount #(date-did-mount node)
-                         :component-will-unmount #(date-will-unmount node)}))
+  [_ node prop]
+  (reagent/create-class {:reagent-render #(date-input node prop)
+                         :component-did-mount #(date-did-mount node prop)
+                         :component-will-unmount #(date-will-unmount node prop)}))
 
 (defmethod field-input :string
-  [_ node]
-  [:span [:input.form-control.input-xs {:field :text :value (:value @node) :on-change #(swap! node assoc :value (-> % .-target .-value))}]])
+  [_ node prop]
+  [:span [:input.form-control.input-xs {:field :text :value (prop @node) :on-change #(swap! node assoc prop (-> % .-target .-value))}]])
 
 (defmethod field-input :default
-  [_ node]
-  [:span [:input.form-control.input-xs {:field :text :value (:value @node) :on-change #(swap! node assoc :value (-> % .-target .-value))}]])
+  [_ node prop]
+  [:span [:input.form-control.input-xs {:field :text :value (prop @node) :on-change #(swap! node assoc prop (-> % .-target .-value))}]])
 
 ;;;;
 
@@ -69,7 +71,9 @@
       [:li [:a {:href "#" :on-click #(add-node % :not-equals)} "Not Equals"]]
       [:li [:a {:href "#" :on-click #(add-node % :contains)} "Contains"]]
       [:li [:a {:href "#" :on-click #(add-node % :greater-than)} "Greater Than"]]
-      [:li [:a {:href "#" :on-click #(add-node % :less-than)} "Less Than"]]]]))
+      [:li [:a {:href "#" :on-click #(add-node % :less-than)} "Less Than"]]
+      [:li [:a {:href "#" :on-click #(add-node % :last-timespan)} "Timespan"]]
+      [:li [:a {:href "#" :on-click #(add-node % :date-range)} "Date Range"]]]]))
  
 (defmethod build-filter :and
   [node _]
@@ -80,8 +84,13 @@
   (conjunction node))
 
 (defmethod build-filter :date-range
-  [node columns]
-  (debugf "Date Range"))
+  [node columns] 
+      [:div.inline.item
+       [field-list node columns]
+       [:span.filter-type-label " is greater than "]
+       [field-input :date node :from]
+       [:span.filter-type-label " and less than "]
+       [field-input :date node :to]])
 
 (defmethod build-filter :last-timespan
   [node columns]
@@ -89,15 +98,15 @@
    [:span.filter-type-label "Last "]
    [:select.form-control.input-xs.fields {:field :list :value (:value @node) 
                                           :on-change #(swap! node assoc :value (-> % .-target .-value)) }
-    [:option {:value 300} "5 Mins"]
-    [:option {:value 600} "10 Mins"]
-    [:option {:value 1800} "30 Mins"]
-    [:option {:value 3600} "1 hour"]
-    [:option {:value 7200} "2 hour"]
-    [:option {:value 14400} "4 hour"]
-    [:option {:value 28800} "8 hour"]
-    [:option {:value 86400} "1 day"]
-    [:option {:value 604800} "7 day"]
+    [:option {:value 300000} "5 Mins"]
+    [:option {:value 600000} "10 Mins"]
+    [:option {:value 1800000} "30 Mins"]
+    [:option {:value 3600000} "1 hour"]
+    [:option {:value 7200000} "2 hour"]
+    [:option {:value 14400000} "4 hour"]
+    [:option {:value 28800000} "8 hour"]
+    [:option {:value 86400000} "1 day"]
+    [:option {:value 604800000} "7 day"]
     [:option {:value 2592000} "30 day"]
     [:option {:value 31471985} "1 year"]]])
 
@@ -107,7 +116,7 @@
       [:div.inline.item
        [field-list node columns]
        [:span.filter-type-label " is equal to "]
-       [field-input type node]]))
+       [field-input type node :value]]))
 
 (defmethod build-filter :not-equals
   [node columns]
@@ -115,7 +124,7 @@
       [:div.inline.item
        [field-list node columns]
        [:span.filter-type-label " is not equal to"]
-       [field-input type node]]))
+       [field-input type node :value]]))
 
 (defmethod build-filter :contains
   [node columns]
@@ -123,7 +132,7 @@
       [:div.inline.item
        [field-list node columns]
        [:span.filter-type-label " contains "]
-       [field-input type node]]))
+       [field-input type node :value]]))
 
 (defmethod build-filter :greater-than
   [node columns]
@@ -131,7 +140,7 @@
       [:div.inline.item
        [field-list node columns]
        [:span.filter-type-label " is greater than "]
-       [field-input type node]]))
+       [field-input type node :value]]))
 
 (defmethod build-filter :less-than
   [node columns]
@@ -139,7 +148,7 @@
       [:div.inline.item
        [field-list node columns]
        [:span.filter-type-label " is less than"]
-       [field-input type node]]))
+       [field-input type node :value]]))
       
 ;;;;
 

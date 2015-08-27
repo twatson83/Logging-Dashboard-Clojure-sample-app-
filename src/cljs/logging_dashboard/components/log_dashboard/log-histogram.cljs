@@ -4,7 +4,7 @@
 (def histogram (reagent/atom []))
 
 (defn build-series []
-  (map #(hash-map :x (:key %) :y (:doc_count %)) @histogram))
+  (map #(vector (:key %) (:doc_count %)) @histogram))
 
 (defn chart-config [] 
   {:chart {:type "column"}
@@ -16,11 +16,7 @@
    :exporting {:enabled false}
    :series [{:name "logs" :data (build-series)}]})
 
-(defn pie-did-mount 
-  []
-  (js/$ (fn []
-          (.highcharts (js/$ "#histogram")
-                       (clj->js (chart-config))))))
+(defn pie-did-mount [] (js/$ (fn [] (.highcharts (js/$ "#histogram") (clj->js (chart-config))))))
 
 (defn pie-will-unmount [] (.destroy (.highcharts (js/$ "#histogram"))))
 

@@ -3,15 +3,71 @@
             [clojurewerkz.elastisch.rest.index :as esi]
             [clojurewerkz.elastisch.rest.document :as esd]
             [clojurewerkz.elastisch.query         :as q]
+            [clojurewerkz.elastisch.aggregation   :as aggs]
             [clojurewerkz.elastisch.rest.response :as esrsp]
+            [taoensso.timbre           :as timbre :refer (tracef debugf infof warnf errorf)]
             [clojure.pprint :as pp]))
 
 (def conn 
   (esr/connect "http://ruffer-bpwfs-d:9200" {:conn-timeout 5000}))
 
+(def exact-fields {:application "Application.Exact"
+                   :service "Service.Exact"
+                   :level "Level.Exact"
+                   :message "message"
+                   :exceptionJson "exceptionJson"
+                   :timestamp "timestamp"})
+
+(defmulti build-query :type)
+
+(defmethod build-query :and 
+  [filter]
+  {:and {:filters (map build-query (:filters filter))}})
+
+(defmethod build-query :or
+  [filter]
+  {:or {:filters (map build-query (:filters filter))}})
+
+(defmethod build-query :equals
+  [filter]
+  {:term {((:field filter) exact-fields) (:value filter)}})
+
+(defmethod build-query :not-equals
+  [filter]
+  {:not {:term {((:field filter) exact-fields) (:value filter)}}})
+
+(defmethod build-query :contains
+  [filter]
+  {:query {:match {(:field filter) (:value filter)}}})
+
+(defmethod build-query :less-than
+  [filter]
+  {:range {(:field filter) {:to (:value filter)}}})
+
+(defmethod build-query :greater-than
+  [filter]
+  {:range {(:field filter) {:from (:value filter)}}})
+
+(defmethod build-query :last-timespan
+  [filter]
+  {:range {"timestamp" {:from (- (System/currentTimeMillis) (:value filter))}}})
+
+(defmethod build-query :date-range
+  [filter]
+  {:range {"timestamp" {:from (:from filter) :to (:to filter)}}})
+
 (defn search 
-  [& {:as params}]
-  (let [res  (apply esd/search conn "logs" "log" (apply concat params))
+  [{:keys [from size sort filters]}]
+(debugf "%s" filters)
+  (let [filter (build-query filters)
+        res (esd/search conn "logs" "log" 
+                              :filter filter :from from
+                              :size size :sort sort
+                              :aggregations { :logs {"filter" filter
+                                                     :aggregations {:applications (aggs/terms "Application.Exact") 
+                                                                    :services (aggs/terms "Service.Exact")
+                                                                    :levels (aggs/terms "Level.Exact")
+                                                                    :histogram (aggs/date-histogram "timestamp" "minute")}}})
         hits (into [] (map #(get % :_source) (esrsp/hits-from res)))
         n    (esrsp/total-hits res)
         aggs (esrsp/aggregations-from res)]

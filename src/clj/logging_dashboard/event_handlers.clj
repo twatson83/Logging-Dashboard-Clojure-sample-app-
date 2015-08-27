@@ -3,7 +3,6 @@
             [taoensso.sente            :as sente]
             [logging-dashboard.logs    :as logs]
             [taoensso.timbre           :as timbre :refer (tracef debugf infof warnf errorf)]
-            [clojurewerkz.elastisch.aggregation   :as aggs]
             [taoensso.sente.server-adapters.http-kit :refer (sente-web-server-adapter)]))
 
 (let [{:keys [ch-recv send-fn ajax-post-fn ajax-get-or-ws-handshake-fn
@@ -49,21 +48,7 @@
     (when ?reply-fn
       (?reply-fn {:umatched-event-as-echoed-from-server event}))))
 
-(defn build-query 
-  [filters]
-  (debugf "%s" filters) 
-  {:match_all {}})
-
 (defmethod event-msg-handler :logs/search
   [{:as ev-msg :keys [event id ?data ring-req ?reply-fn send-fn]}]
-  (do
-    (debugf "Fetching logs")
-    (?reply-fn (logs/search :query (build-query (get ?data :filters)) 
-                            :from  (get ?data :from)
-                            :size  (get ?data :size)
-                            :sort  (get ?data :sort)
-                            :aggregations {:applications (aggs/terms "Application.Exact")
-                                           :services (aggs/terms "Service.Exact")
-                                           :levels (aggs/terms "Level.Exact")
-                                           :histogram (aggs/date-histogram "timestamp" "day")}))))
+  (?reply-fn (logs/search ?data)))
 

@@ -20,7 +20,7 @@
                     :size   page-size}] 
      10000
      (fn [cb-reply] 
-       (swap! logs assoc :hits (:hits cb-reply) :number (:number cb-reply) :aggregations (:aggregations cb-reply) :searching false)))))
+       (swap! logs assoc :hits (:hits cb-reply) :number (:number cb-reply) :aggregations (get-in cb-reply [:aggregations :logs]) :searching false)))))
 
 ;; callbacks
 
