@@ -22,6 +22,7 @@
                  [cljs-flux "0.1.2"]
                  [hickory "0.5.4"]
                  [org.apache.commons/commons-lang3 "3.1"]
+                 [jarohen/nomad "0.7.1"]
                  [com.lucasbradstreet/cljs-uuid-utils "1.0.2"]]
   :plugins [[lein-ring "0.8.13"]
             [lein-cljsbuild "1.0.6"]

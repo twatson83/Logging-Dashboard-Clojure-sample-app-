@@ -6,10 +6,14 @@
             [clojurewerkz.elastisch.aggregation   :as aggs]
             [clojurewerkz.elastisch.rest.response :as esrsp]
             [taoensso.timbre           :as timbre :refer (tracef debugf infof warnf errorf)]
+            [nomad :refer [defconfig]]
+            [clojure.java.io :as io]
             [clojure.pprint :as pp]))
 
-(def conn 
-  (esr/connect "http://lonapptst05:9200" {:conn-timeout 5000}))
+(defconfig config (io/resource "config/config.edn"))
+(debugf "Config - %s" (config))
+
+(def conn (esr/connect (:es (config)) {:conn-timeout 5000}))
 
 (def exact-fields {:Application "Application.Exact"
                    :Service "Service.Exact"
