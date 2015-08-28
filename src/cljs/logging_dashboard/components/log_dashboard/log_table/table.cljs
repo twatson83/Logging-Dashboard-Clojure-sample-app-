@@ -1,6 +1,8 @@
 (ns logging-dashboard.components.log_dashboard.log_table.table
   (:require [logging-dashboard.utils.datetime :as datetime]
             [logging-dashboard.dispatcher     :as dispatcher]
+            [taoensso.encore                  :refer (tracef debugf infof warnf errorf)]
+            [hickory.core                     :refer (parse-fragment as-hiccup)]
             [cljs-flux.dispatcher             :refer [dispatch]]))
 
 (defn table-header 
@@ -15,15 +17,23 @@
                     (if (= sort-direction "asc") 
                       [:span.glyphicon.glyphicon-chevron-up.col-icon.pull-right] 
                       [:span.glyphicon.glyphicon-chevron-down.col-icon.pull-right]) "")]
-    [:th [:a {:href "#" :class field-name :on-click on-click} label] sort-char]))
+    [:th [:a {:href "#" :class field-name :on-click #(.preventDefault %)} label] sort-char]))
+
+(defn highlight [value query]
+  [:span (if-not (nil? value)
+           (if (empty? @query)
+             value
+             (map as-hiccup (parse-fragment (clojure.string/replace (clojure.string/replace value #"\"" "") 
+                                                                    (re-pattern @query) 
+                                                                    (str "<mark>" @query "</mark>"))))))])
 
 (defn table 
-  [logs columns sorting]
+  [logs columns sorting query]
   (let [timestamp-visible (get-in @columns [:timestamp :visible])
-        level-visible (get-in @columns [:level :visible])
+        level-visible (get-in @columns [:Level :visible])
         message-visible (get-in @columns [:message :visible])
-        application-visible (get-in @columns [:application :visible])
-        service-visible (get-in @columns [:service :visible])
+        application-visible (get-in @columns [:Application :visible])
+        service-visible (get-in @columns [:Service :visible])
         exceptionJson-visible (get-in @columns [:exceptionJson :visible])]
     [:table.table.table-bordered.table-hover.table-condensed
      [:thead
@@ -41,8 +51,8 @@
           ^{:key id} 
           [:tr {:class class}
            (if timestamp-visible     [:td.timestamp (datetime/format :MEDIUM_DATETIME timestamp)]) 
-           (if level-visible         [:td.level level]) 
-           (if message-visible       [:td.message message]) 
-           (if application-visible   [:td.application application]) 
-           (if service-visible       [:td.service service]) 
-           (if exceptionJson-visible [:td.exceptionJson exceptionJson])]))]]))
+           (if level-visible         [:td.level  [highlight level query]]) 
+           (if message-visible       [:td.message  [highlight message query]]) 
+           (if application-visible   [:td.application  [highlight application query]]) 
+           (if service-visible       [:td.service  [highlight service query]]) 
+           (if exceptionJson-visible [:td.exceptionJson  [highlight exceptionJson query]])]))]]))

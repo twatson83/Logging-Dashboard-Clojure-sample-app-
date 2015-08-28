@@ -12,11 +12,12 @@
             [logging-dashboard.stores.logs                        :as logs-store]))
 
 (defn watch-state 
-  [columns table-settings filters sorting logs]
+  [columns table-settings filters sorting logs query]
   (add-watch config-store/config :config (fn [_ _ _ new-state] (do (reset! filters (:filters new-state))
                                                                    (reset! columns (:columns new-state))
                                                                    (reset! table-settings (:table-settings new-state))
-                                                                   (reset! sorting (:sorting new-state)))))
+                                                                   (reset! sorting (:sorting new-state))
+                                                                   (reset! query (:query new-state)))))
   (add-watch logs-store/logs :logs (fn [_ _ _ new-state] (reset! logs new-state))))
 
 (def timer (atom nil))
@@ -35,13 +36,14 @@
         table-settings (reagent/atom (:table-settings @config-store/config))
         filters        (reagent/atom (:filters        @config-store/config))
         sorting        (reagent/atom (:sorting        @config-store/config))
+        query          (reagent/atom (:query          @config-store/config))
         logs           (reagent/atom @logs-store/logs)]
     (fn []
-      (watch-state columns table-settings filters sorting logs)
+      (watch-state columns table-settings filters sorting logs query)
       (stop-timer)
       (create-timer #(if-not (:searching @logs) (dispatch dispatcher/logs-search nil)) (:refresh-interval @table-settings))
       [:div.container-fluid
-       [header columns filters table-settings logs]
+       [header columns filters table-settings logs query]
        [:div.row [:div.col-md-12 [log-histogram logs]]]
        [:div.row
         [:div.col-md-4 [application-pie logs]]
@@ -49,4 +51,4 @@
         [:div.col-md-4 [level-table logs]]]
        [:div.row
         [:div.col-md-12
-         [log-table columns table-settings filters sorting logs]]]])))
+         [log-table columns table-settings filters sorting logs query]]]])))

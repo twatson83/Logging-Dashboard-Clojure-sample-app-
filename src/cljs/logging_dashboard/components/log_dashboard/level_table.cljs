@@ -5,7 +5,7 @@
   [logs]
   (let [levels (get-in @logs [:aggregations :levels :buckets])
         prevent-default #(.preventDefault %)]
-   [:div.log-table
+   [:div.level-table
     [:table.table.table-bordered.table-hover.table-condensed
      [:thead
       [:tr

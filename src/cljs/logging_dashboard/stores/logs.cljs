@@ -11,13 +11,15 @@
   [& args]
   (let [{:keys [field direction]} (:sorting @config-store/config)
         {:keys [page-size page-num]} (:table-settings @config-store/config)
-        filters (:filters @config-store/config)]
+        filters (:filters @config-store/config)
+        query (:query @config-store/config)]
     (swap! logs assoc :searching true)
     (server/chsk-send! 
      [:logs/search {:filters filters
-                    :sort   {field direction} 
-                    :from   (* page-size page-num) 
-                    :size   page-size}] 
+                    :sort  {field direction} 
+                    :from  (* page-size page-num) 
+                    :size  page-size
+                    :query query}] 
      10000
      (fn [cb-reply] 
        (swap! logs assoc :hits (:hits cb-reply) :number (:number cb-reply) :aggregations (get-in cb-reply [:aggregations :logs]) :searching false)))))
@@ -50,3 +52,9 @@
 
 (def logs-search
   (register dispatcher/logs-search search))
+
+(def update-query
+  (register dispatcher/update-query
+            (fn [query]
+              (wait-for dispatcher/update-query [config-store/update-query])
+              (search))))

@@ -11,8 +11,7 @@
    :title {:text "Apps" :align "left" :floating true} 
    :credits {:enabled false}
    :plotOptions {:pie {:showInLegend true :dataLabels {:enabled false}}}
-   :legend {:enabled true :layout "vertical" :align "right" 
-            :itemStyle {:fontSize "10px"} :itemWidth 140 :verticalAlign "middle"}
+   :legend {:enabled false}
    :exporting {:enabled false}
    :series [{:name "applications" :colorByPoint true :data (build-series)}]})
 

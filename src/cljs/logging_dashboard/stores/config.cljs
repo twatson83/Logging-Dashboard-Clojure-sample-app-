@@ -6,12 +6,13 @@
 
 (def default-config 
   {:columns {:timestamp     {:label "Timestamp"   :type :date   :visible true}
-             :level         {:label "Level"       :type :string :visible true}
+             :Level         {:label "Level"       :type :string :visible true}
              :message       {:label "Message"     :type :string :visible true}
-             :application   {:label "Application" :type :string :visible true}
-             :service       {:label "Service"     :type :string :visible true}
+             :Application   {:label "Application" :type :string :visible true}
+             :Service       {:label "Service"     :type :string :visible true}
              :exceptionJson {:label "Exception"   :type :string :visible true}}
    :sorting {:field :timestamp :direction "desc"}
+   :query ""
    :filters {:id "1" :type :and :filters [{:id "2" :type :last-timespan :value 3600000}] }
    :table-settings {:page-size 50 :page-num 0 :refresh-interval 0}})
 
@@ -60,3 +61,8 @@
   (register dispatcher/reset-config
             (fn [_]
               (reset! config default-config))))
+
+(def update-query
+  (register dispatcher/update-query
+            (fn [query]
+              (swap! config assoc :query query))))

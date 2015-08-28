@@ -9,14 +9,15 @@
             [clojure.pprint :as pp]))
 
 (def conn 
-  (esr/connect "http://ruffer-bpwfs-d:9200" {:conn-timeout 5000}))
+  (esr/connect "http://lonapptst05:9200" {:conn-timeout 5000}))
 
-(def exact-fields {:application "Application.Exact"
-                   :service "Service.Exact"
-                   :level "Level.Exact"
+(def exact-fields {:Application "Application.Exact"
+                   :Service "Service.Exact"
+                   :Level "Level.Exact"
                    :message "message"
                    :exceptionJson "exceptionJson"
-                   :timestamp "timestamp"})
+                   :timestamp "timestamp"
+                   :session "session"})
 
 (defmulti build-query :type)
 
@@ -57,17 +58,21 @@
   {:range {"timestamp" {:from (:from filter) :to (:to filter)}}})
 
 (defn search 
-  [{:keys [from size sort filters]}]
-(debugf "%s" filters)
+  [{:keys [from size sort filters query]}]
   (let [filter (build-query filters)
         res (esd/search conn "logs" "log" 
-                              :filter filter :from from
-                              :size size :sort sort
-                              :aggregations { :logs {"filter" filter
-                                                     :aggregations {:applications (aggs/terms "Application.Exact") 
-                                                                    :services (aggs/terms "Service.Exact")
-                                                                    :levels (aggs/terms "Level.Exact")
-                                                                    :histogram (aggs/date-histogram "timestamp" "minute")}}})
+                        :query (if (or (nil? query) (empty? query)) 
+                                 (q/match-all) 
+                                 {:multi_match 
+                                  {:query query
+                                   :fields ["Application" "Service" "Level" "message" "exceptionJson" "session"]}})
+                        :filter filter :from from
+                        :size size :sort sort
+                        :aggregations { :logs {"filter" filter
+                                               :aggregations {:applications (aggs/terms "Application.Exact") 
+                                                              :services (aggs/terms "Service.Exact")
+                                                              :levels (aggs/terms "Level.Exact")
+                                                              :histogram (aggs/date-histogram "timestamp" "minute")}}})
         hits (into [] (map #(get % :_source) (esrsp/hits-from res)))
         n    (esrsp/total-hits res)
         aggs (esrsp/aggregations-from res)]

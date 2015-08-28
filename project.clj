@@ -2,7 +2,7 @@
   :description "FIXME: write description"
   :url "http://example.com/FIXME"
   :min-lein-version "2.0.0"
-  :main "logging-dashboard.server"
+  :main logging-dashboard.server
   :dependencies [[org.clojure/clojure "1.6.0"]
                  [org.clojure/tools.reader "0.10.0-alpha1"]
                  [org.clojure/clojurescript "0.0-2411" :exclusions [org.apache.ant/ant]]
@@ -20,8 +20,9 @@
                  [org.clojars.frozenlock/reagent-modals "0.2.3"]
                  [reagent-forms "0.5.5"]
                  [cljs-flux "0.1.2"]
-                 [com.lucasbradstreet/cljs-uuid-utils "1.0.2"]
-                 ]
+                 [hickory "0.5.4"]
+                 [org.apache.commons/commons-lang3 "3.1"]
+                 [com.lucasbradstreet/cljs-uuid-utils "1.0.2"]]
   :plugins [[lein-ring "0.8.13"]
             [lein-cljsbuild "1.0.6"]
             [lein-bower "0.5.1"]
@@ -32,7 +33,6 @@
   :profiles
   {:dev {:dependencies [[javax.servlet/servlet-api "2.5"]
                         [ring-mock "0.1.5"]]}}
-  
   :cljsbuild {:builds
               [{:source-paths ["src/cljs"]
                 :compiler {:output-dir "resources/public/js"

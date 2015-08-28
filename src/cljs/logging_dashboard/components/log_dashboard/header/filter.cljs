@@ -97,7 +97,7 @@
   [:div.inline.item
    [:span.filter-type-label "Last "]
    [:select.form-control.input-xs.fields {:field :list :value (:value @node) 
-                                          :on-change #(swap! node assoc :value (-> % .-target .-value)) }
+                                          :on-change #(swap! node assoc :value (-> % .-target .-value js/parseInt)) }
     [:option {:value 300000} "5 Mins"]
     [:option {:value 600000} "10 Mins"]
     [:option {:value 1800000} "30 Mins"]
