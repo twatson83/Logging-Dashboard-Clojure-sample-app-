@@ -58,3 +58,9 @@
             (fn [query]
               (wait-for dispatcher/update-query [config-store/update-query])
               (search))))
+
+(def save-dashboard
+  (register dispatcher/save-dashboard
+            (fn [& args]  
+              (wait-for dispatcher/save-dashboard [config-store/save-dashboard])
+              (search))))

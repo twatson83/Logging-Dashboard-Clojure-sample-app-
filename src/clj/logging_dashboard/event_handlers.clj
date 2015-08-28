@@ -2,6 +2,7 @@
   (:require [clojure.core.async        :as async :refer [<! <!! chan go thread go-loop]]
             [taoensso.sente            :as sente]
             [logging-dashboard.logs    :as logs]
+            [logging-dashboard.configs :as configs]
             [taoensso.timbre           :as timbre :refer (tracef debugf infof warnf errorf)]
             [taoensso.sente.server-adapters.http-kit :refer (sente-web-server-adapter)]))
 
@@ -52,3 +53,6 @@
   [{:as ev-msg :keys [event id ?data ring-req ?reply-fn send-fn]}]
   (?reply-fn (logs/search ?data)))
 
+(defmethod event-msg-handler :config/save
+  [{:as ev-msg :keys [event id ?data ring-req ?reply-fn send-fn]}]
+  (?reply-fn (configs/save ?data)))

@@ -11,7 +11,6 @@
             [clojure.pprint :as pp]))
 
 (defconfig config (io/resource "config/config.edn"))
-(debugf "Config - %s" (config))
 
 (def conn (esr/connect (:es (config)) {:conn-timeout 5000}))
 

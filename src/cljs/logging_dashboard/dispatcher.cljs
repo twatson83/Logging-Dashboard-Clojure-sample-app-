@@ -8,3 +8,4 @@
 (def logs-search     (dispatcher))
 (def reset-config    (dispatcher))
 (def update-query    (dispatcher))
+(def save-dashboard  (dispatcher))

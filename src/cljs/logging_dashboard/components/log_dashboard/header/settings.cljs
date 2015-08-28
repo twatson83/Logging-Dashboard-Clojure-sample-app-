@@ -2,6 +2,7 @@
   (:require [logging-dashboard.stores.config  :as config-store      :refer [validate-page-size validate-refresh-interval]]
             [reagent-modals.modals            :as reagent-modals    :refer [modal! modal-window close-modal!]]
             [logging-dashboard.dispatcher     :as dispatcher]
+            [reagent.core                     :as reagent]
             [cljs-flux.dispatcher             :refer [dispatch]]
             [reagent-forms.core               :refer [bind-fields]]))
 
@@ -12,7 +13,8 @@
 
 (defn settings-modal
   [table-settings]
-  (let [doc (atom {:page-size (:page-size @table-settings) :refresh-interval (:refresh-interval @table-settings)})]
+  (let [doc (reagent/atom {:page-size (:page-size @table-settings) :refresh-interval (:refresh-interval @table-settings)
+                   :name (:name @table-settings)})]
     (fn []
       [:div
        [:div.modal-header
@@ -21,6 +23,9 @@
         [:h4.modal-title "Settings"]]
        [:div.modal-body
         [:form
+         [:div.form-group 
+          [:label.control-label {:for "name"} "Name"]
+          [bind-fields [:input.form-control {:field :text :id :name}] doc]]
          [:div.form-group {:class (if-not (validate-page-size (:page-size @doc)) "has-error")}
           [:label.control-label {:for "page-size"} "Page Size"]
           [bind-fields [:input.form-control {:field :numeric :id :page-size}] doc]
@@ -30,16 +35,23 @@
           [bind-fields [:input.form-control {:field :numeric :id :refresh-interval
                                              :in-fn #(/ % 1000)
                                              :out-fn #(* % 1000)}] doc]
-          [:span.error-message "Refresh interval must greater than or equal to 0."]]
-         [:div.form-group [:a {:href "#" :on-click #(dispatch dispatcher/reset-config nil)} "Click here to download settings"]]]]
+          [:span.error-message "Refresh interval must greater than or equal to 0."]]]]
        [:div.modal-footer
         [:button.btn.btn-danger.pull-left.btn-sm {:type "button" :on-click #(dispatch dispatcher/reset-config nil)} "Reset settings"]
         [:button.btn.btn-default {:type "button"
-                                  :on-click #(let [{:keys [page-size refresh-interval]} @doc]
+                                  :on-click #(let [{:keys [page-size refresh-interval name]} @doc]
+                                               (when (validate-doc doc)
+                                                 (dispatch dispatcher/save-dashboard {:page-size page-size 
+                                                                                      :refresh-interval refresh-interval
+                                                                                      :name name})
+                                                 (close-modal!)))} "Save Dashboard"]
+        [:button.btn.btn-default {:type "button"
+                                  :on-click #(let [{:keys [page-size refresh-interval name]} @doc]
                                                (when (validate-doc doc)
                                                  (dispatch dispatcher/update-settings {:page-size page-size 
-                                                                                       :refresh-interval refresh-interval})
-                                                 (close-modal!)))} "Save"]]])))
+                                                                                       :refresh-interval refresh-interval
+                                                                                       :name name})
+                                                 (close-modal!)))} "Close"]]])))
 
 (defn settings 
   [table-settings]

@@ -1,6 +1,7 @@
 (ns logging-dashboard.stores.config
   (:require [alandipert.storage-atom      :refer [local-storage]]
             [logging-dashboard.dispatcher :as    dispatcher]
+            [logging-dashboard.utils.server  :as server]
             [taoensso.encore                  :refer (tracef debugf infof warnf errorf)]
             [cljs-flux.dispatcher         :refer [register]]))
 
@@ -14,7 +15,7 @@
    :sorting {:field :timestamp :direction "desc"}
    :query ""
    :filters {:id "1" :type :and :filters [{:id "2" :type :last-timespan :value 3600000}] }
-   :table-settings {:page-size 50 :page-num 0 :refresh-interval 0}})
+   :table-settings {:page-size 50 :page-num 0 :refresh-interval 0 :name "Default"}})
 
 (def config (local-storage (atom default-config) :config))
 
@@ -66,3 +67,17 @@
   (register dispatcher/update-query
             (fn [query]
               (swap! config assoc :query query))))
+
+(defn- save
+  [& args]
+  (server/chsk-send! 
+   [:config/save @config] 
+   10000
+   (fn [cb-reply] 
+       (debugf "Saved"))))
+
+(def save-dashboard
+  (register dispatcher/save-dashboard
+            (fn [settings]
+              (swap! config assoc :table-settings settings)
+              (save))))
