@@ -9,3 +9,6 @@
 (def reset-config    (dispatcher))
 (def update-query    (dispatcher))
 (def save-dashboard  (dispatcher))
+(def set-config      (dispatcher))
+(def get-configs     (dispatcher))
+(def delete-config   (dispatcher))

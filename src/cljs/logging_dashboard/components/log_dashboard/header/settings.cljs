@@ -4,6 +4,7 @@
             [logging-dashboard.dispatcher     :as dispatcher]
             [reagent.core                     :as reagent]
             [cljs-flux.dispatcher             :refer [dispatch]]
+            [taoensso.encore                  :refer (tracef debugf infof warnf errorf)]
             [reagent-forms.core               :refer [bind-fields]]))
 
 (defn validate-doc 
@@ -37,7 +38,8 @@
                                              :out-fn #(* % 1000)}] doc]
           [:span.error-message "Refresh interval must greater than or equal to 0."]]]]
        [:div.modal-footer
-        [:button.btn.btn-danger.pull-left.btn-sm {:type "button" :on-click #(dispatch dispatcher/reset-config nil)} "Reset settings"]
+        [:button.btn.btn-danger.pull-left.btn-sm {:type "button" :on-click #(do (dispatch dispatcher/delete-config (get-in @table-settings [:name]))
+                                                                                (close-modal!))} "Delete Dashboard"] 
         [:button.btn.btn-default {:type "button"
                                   :on-click #(let [{:keys [page-size refresh-interval name]} @doc]
                                                (when (validate-doc doc)

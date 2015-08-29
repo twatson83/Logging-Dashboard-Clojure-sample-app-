@@ -15,9 +15,10 @@
    :sorting {:field :timestamp :direction "desc"}
    :query ""
    :filters {:id "1" :type :and :filters [{:id "2" :type :last-timespan :value 3600000}] }
-   :table-settings {:page-size 50 :page-num 0 :refresh-interval 0 :name "Default"}})
+   :table-settings {:page-size 50 :page-num 0 :refresh-interval 0 :name ""}})
 
 (def config (local-storage (atom default-config) :config))
+(def configs (atom []))
 
 ; When page first loads set page number to 0
 (swap! config assoc-in [:table-settings :page-num] 0)
@@ -35,6 +36,14 @@
   (and (not (nil? refresh-interval)) 
        (not= "" refresh-interval)
        (>= refresh-interval 0)))
+
+(defn- save
+  [& args]
+  (server/chsk-send! 
+   [:config/save @config] 
+   10000
+   (fn [cb-reply] 
+       (debugf "Saved"))))
 
 ;; Callbacks
 
@@ -68,16 +77,31 @@
             (fn [query]
               (swap! config assoc :query query))))
 
-(defn- save
-  [& args]
-  (server/chsk-send! 
-   [:config/save @config] 
-   10000
-   (fn [cb-reply] 
-       (debugf "Saved"))))
-
 (def save-dashboard
   (register dispatcher/save-dashboard
             (fn [settings]
               (swap! config assoc :table-settings settings)
               (save))))
+
+(def set-config
+  (register dispatcher/set-config
+            (fn [new-config]
+              (reset! config new-config))))
+
+(def get-configs
+  (register dispatcher/get-configs
+            (fn [_]
+              (server/chsk-send!
+               [:config/get-all]
+               10000
+               (fn [cb-reply]
+                 (reset! configs cb-reply))))))
+
+(def delete-config
+  (register dispatcher/delete-config
+            (fn [name]
+              (server/chsk-send!
+               [:config/delete name]
+               10000
+               (fn [cb-reply]
+                 (reset! config default-config))))))

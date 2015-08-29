@@ -11,7 +11,8 @@
 
 (defroute home-path "/" []
   (do (render-component [log-dashboard] (.getElementById js/document "content"))
-      (dispatch dispatcher/logs-search nil)))
+      (dispatch dispatcher/logs-search nil)
+      (dispatch dispatcher/get-configs nil)))
 
 (defroute "*" []
   (render-component [page-not-found] (.getElementById js/document "content")))

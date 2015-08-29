@@ -64,3 +64,9 @@
             (fn [& args]  
               (wait-for dispatcher/save-dashboard [config-store/save-dashboard])
               (search))))
+
+(def set-config
+  (register dispatcher/set-config
+            (fn [& args]  
+              (wait-for dispatcher/set-config [config-store/set-config])
+              (search))))

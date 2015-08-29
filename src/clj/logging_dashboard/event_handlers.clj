@@ -56,3 +56,11 @@
 (defmethod event-msg-handler :config/save
   [{:as ev-msg :keys [event id ?data ring-req ?reply-fn send-fn]}]
   (?reply-fn (configs/save ?data)))
+
+(defmethod event-msg-handler :config/delete
+  [{:as ev-msg :keys [event id ?data ring-req ?reply-fn send-fn]}]
+  (?reply-fn (configs/delete ?data)))
+
+(defmethod event-msg-handler :config/get-all
+  [{:as ev-msg :keys [event id ?data ring-req ?reply-fn send-fn]}]
+  (?reply-fn (configs/get-all)))
