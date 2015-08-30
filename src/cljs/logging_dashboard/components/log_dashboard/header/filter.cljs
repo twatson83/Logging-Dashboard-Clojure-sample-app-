@@ -12,11 +12,11 @@
 
 (defn field-list 
   [node columns]
-  (let [id (:id @node)]
+  (let [sorted-columns (into (sorted-map-by (fn [k1 k2] (compare (get-in @columns [k1 :label]) (get-in @columns [k2 :label])))) @columns)]
     [:select.form-control.input-xs.fields {:field :list :value (:field @node) 
                                            :on-change #(swap! node assoc :field (-> % .-target .-value keyword)) }
-     (for [[k v] @columns]
-       [:option {:key (str id k) :value k} (:label v)])]))
+     (for [[k v] sorted-columns]
+       [:option {:key (str (:id @node) k) :value k} (:label v)])]))
 
 (defn date-input
   [node prop]
@@ -69,7 +69,6 @@
       [:li.divider {:role "seperator"}]
       [:li [:a {:href "#" :on-click #(add-node % :equals)} "Equals"]]
       [:li [:a {:href "#" :on-click #(add-node % :not-equals)} "Not Equals"]]
-      [:li [:a {:href "#" :on-click #(add-node % :contains)} "Contains"]]
       [:li [:a {:href "#" :on-click #(add-node % :greater-than)} "Greater Than"]]
       [:li [:a {:href "#" :on-click #(add-node % :less-than)} "Less Than"]]
       [:li [:a {:href "#" :on-click #(add-node % :last-timespan)} "Timespan"]]
@@ -124,14 +123,6 @@
       [:div.inline.item
        [field-list node columns]
        [:span.filter-type-label " is not equal to"]
-       [field-input type node :value]]))
-
-(defmethod build-filter :contains
-  [node columns]
-  (let [type (:type (first (vals (select-keys @columns [(:field @node)]))))]
-      [:div.inline.item
-       [field-list node columns]
-       [:span.filter-type-label " contains "]
        [field-input type node :value]]))
 
 (defmethod build-filter :greater-than

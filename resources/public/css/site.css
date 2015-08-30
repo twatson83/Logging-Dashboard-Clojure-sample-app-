@@ -119,8 +119,6 @@ select.input-xs{
     width: 50px;
 }
 
-.filters .node {
-}
 .filters .item{
     padding-bottom: 10px;
 }
@@ -138,10 +136,6 @@ select.input-xs{
 .filters .fields {
     width: 90px;
 }
-.filters .tab {
-    margin-bottom: 5px;
-}
-
 #content .table {
     margin-bottom: 0;
 }

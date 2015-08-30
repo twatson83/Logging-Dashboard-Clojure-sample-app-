@@ -7,9 +7,10 @@
 
 (defn config-item
   [config]
-  [:li [:a {:href "#" :on-click #(do (.preventDefault %) 
-                                     (dispatch dispatcher/set-config config))} 
-        (get-in config [:table-settings :name])]])
+  (let [name (get-in config [:table-settings :name])]
+    [:li {:key (str "dashboard_" name) } [:a {:href "#" :on-click #(do (.preventDefault %) 
+                                                                       (dispatch dispatcher/set-config config))} 
+                                          name]]))
 
 (defn header []
   (let [configs (reagent/atom @config-store/configs)

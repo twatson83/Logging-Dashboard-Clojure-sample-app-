@@ -23,9 +23,9 @@
   [:span (if-not (nil? value)
            (if (empty? @query)
              value
-             (map as-hiccup (parse-fragment (clojure.string/replace (clojure.string/replace value #"\"" "") 
-                                                                    (re-pattern @query) 
-                                                                    (str "<mark>" @query "</mark>"))))))])
+             (map #([:span {:key (as-hiccup %)}]) (parse-fragment (clojure.string/replace (clojure.string/replace value #"\"" "") 
+                                                                                          (re-pattern @query) 
+                                                                                          (str "<mark>" @query "</mark>"))))))])
 
 (defn table 
   [logs columns sorting query]
