@@ -20,9 +20,9 @@
 
 (defn date-input
   [node prop]
-  [:span [:input.form-control.input-xs {:class (str (name prop) (:id @node) "_picker") :type "text" 
-                                        :value (if-not (nil? (prop @node)) (.format (.unix js/moment (/ (prop @node) 1000)) "DD/MM/YYYY HH:mm:ss")) 
-                                        :on-change #(debugf %)}]])
+  [:span [:input.form-control.input-xs.date-input {:class (str (name prop) (:id @node) "_picker") :type "text" 
+                                                   :value (if-not (nil? (prop @node)) (.format (.unix js/moment (/ (prop @node) 1000)) "DD/MM/YYYY HH:mm:ss")) 
+                                                   :on-change #(debugf %)}]])
 
 (defn date-will-unmount
   [node prop]
@@ -95,8 +95,8 @@
   [node columns]
   [:div.inline.item
    [:span.filter-type-label "Last "]
-   [:select.form-control.input-xs.fields {:field :list :value (:value @node) 
-                                          :on-change #(swap! node assoc :value (-> % .-target .-value js/parseInt)) }
+   [:select.form-control.input-xs.timespan {:field :list :value (:value @node) 
+                                            :on-change #(swap! node assoc :value (-> % .-target .-value js/parseInt)) }
     [:option {:value 300000} "5 Mins"]
     [:option {:value 600000} "10 Mins"]
     [:option {:value 1800000} "30 Mins"]

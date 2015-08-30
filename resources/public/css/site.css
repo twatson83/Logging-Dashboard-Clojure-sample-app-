@@ -134,8 +134,15 @@ select.input-xs{
     margin: 4px 0;
 }
 .filters .fields {
-    width: 90px;
+    width: 120px;
 }
+.filters .timespan {
+    width: 95px;
+}
+.filters .date-input {
+    width: 110px;
+}
+
 #content .table {
     margin-bottom: 0;
 }
