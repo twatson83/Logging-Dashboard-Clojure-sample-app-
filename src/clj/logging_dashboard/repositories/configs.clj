@@ -1,4 +1,4 @@
-(ns logging-dashboard.configs
+(ns logging-dashboard.repositories.configs
   (require [clojure.java.io :as io])
   (:import java.io.File))
 

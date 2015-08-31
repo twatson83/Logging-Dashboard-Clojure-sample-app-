@@ -183,3 +183,6 @@ body mark {
     color: #000;
     background: #ff0;
 }
+.update-type {
+    margin-bottom: 0;
+}

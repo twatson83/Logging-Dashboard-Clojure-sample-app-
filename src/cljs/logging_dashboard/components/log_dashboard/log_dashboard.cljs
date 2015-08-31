@@ -42,14 +42,18 @@
     (fn []
       (watch-state columns table-settings filters sorting logs query)
       (stop-timer)
-      (create-timer #(if-not (:searching @logs) (dispatch dispatcher/logs-search nil)) (:refresh-interval @table-settings))
+      (if (= (:update-type @table-settings) "polling")
+        (create-timer #(if-not (:searching @logs) 
+                         (dispatch dispatcher/logs-search nil)) (:refresh-interval @table-settings)))
       [:div.container-fluid
        [header columns filters table-settings logs query]
-       [:div.row [:div.col-md-12 [log-histogram logs]]]
-       [:div.row
-        [:div.col-md-4 [application-pie logs]]
-        [:div.col-md-4 [service-pie logs]]
-        [:div.col-md-4 [level-table logs]]]
+       (if (:histogram-enabled @table-settings) 
+         [:div.row [:div.col-md-12 [log-histogram logs]]])
+       (if (:pie-charts-enabled @table-settings)
+         [:div.row
+          [:div.col-md-4 [application-pie logs]]
+          [:div.col-md-4 [service-pie logs]]
+          [:div.col-md-4 [level-table logs]]])
        [:div.row
         [:div.col-md-12
          [log-table columns table-settings filters sorting logs query]]]])))
