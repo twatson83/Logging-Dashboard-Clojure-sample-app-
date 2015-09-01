@@ -119,8 +119,6 @@ select.input-xs{
     width: 50px;
 }
 
-.filters .node {
-}
 .filters .item{
     padding-bottom: 10px;
 }
@@ -136,10 +134,13 @@ select.input-xs{
     margin: 4px 0;
 }
 .filters .fields {
-    width: 90px;
+    width: 120px;
 }
-.filters .tab {
-    margin-bottom: 5px;
+.filters .timespan {
+    width: 95px;
+}
+.filters .date-input {
+    width: 110px;
 }
 
 #content .table {
@@ -181,4 +182,7 @@ html, body, .content {
 body mark {
     color: #000;
     background: #ff0;
+}
+.update-type {
+    margin-bottom: 0;
 }

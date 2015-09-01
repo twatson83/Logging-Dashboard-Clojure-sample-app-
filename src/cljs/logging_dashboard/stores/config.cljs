@@ -1,8 +1,11 @@
 (ns logging-dashboard.stores.config
+  (:require-macros
+   [cljs.core.async.macros :as asyncm :refer (go go-loop)])
   (:require [alandipert.storage-atom      :refer [local-storage]]
             [logging-dashboard.dispatcher :as    dispatcher]
             [logging-dashboard.utils.server  :as server]
             [taoensso.encore                  :refer (tracef debugf infof warnf errorf)]
+            [cljs.core.async        :as async  :refer (<! >! put! chan timeout)]
             [cljs-flux.dispatcher         :refer [register]]))
 
 (def default-config 
@@ -15,12 +18,28 @@
    :sorting {:field :timestamp :direction "desc"}
    :query ""
    :filters {:id "1" :type :and :filters [{:id "2" :type :last-timespan :value 3600000}] }
-   :table-settings {:page-size 50 :page-num 0 :refresh-interval 0 :name "Default"}})
+   :table-settings {:page-size 50 :page-num 0 :refresh-interval 0 :name ""
+                    :histogram-enabled true :pie-charts-enabled true
+                    :update-type "realtime"}})
 
 (def config (local-storage (atom default-config) :config))
 
 ; When page first loads set page number to 0
 (swap! config assoc-in [:table-settings :page-num] 0)
+
+(add-watch config :auto-update 
+           (fn [_ _ old new] 
+             (let [old-type (get-in old [:table-settings :update-type])
+                   new-type (get-in new [:table-settings :update-type])]
+               (if (= new-type "realtime")
+                 (server/chsk-send! [:logs/start-streaming @config])
+                 (server/chsk-send! [:logs/stop-streaming])))))
+
+(go (while true (<! (timeout 60000)) 
+           (if (= (get-in @config [:table-settings :update-type]) "realtime")
+             (server/chsk-send! [:logs/start-streaming @config]))))
+
+(def configs (atom []))
 
 ;; Validators
 
@@ -36,17 +55,23 @@
        (not= "" refresh-interval)
        (>= refresh-interval 0)))
 
-;; Callbacks
+(defn- save [] (server/chsk-send! [:config/save @config]))
 
+(defn- fetch-configs []
+  (server/chsk-send!
+   [:config/get-all]
+   100000
+   (fn [cb-reply]
+     (reset! configs cb-reply))))
+
+;; Callbacks
 (def update-columns
   (register dispatcher/update-columns
-            (fn [columns]
-              (swap! config assoc :columns columns))))
+            (fn [columns] (swap! config assoc :columns columns))))
 
 (def update-sorting
   (register dispatcher/update-sorting
-            (fn [sorting]
-              (swap! config assoc :sorting sorting))))
+            (fn [sorting] (swap! config assoc :sorting sorting))))
 
 (def update-settings
   (register dispatcher/update-settings 
@@ -55,29 +80,35 @@
 
 (def update-filters
   (register dispatcher/update-filters
-            (fn [filters]
-              (swap! config assoc :filters filters))))
+            (fn [filters] (swap! config assoc :filters filters))))
 
 (def reset-config 
   (register dispatcher/reset-config
-            (fn [_]
-              (reset! config default-config))))
+            (fn [_] (reset! config default-config))))
 
 (def update-query
   (register dispatcher/update-query
-            (fn [query]
-              (swap! config assoc :query query))))
-
-(defn- save
-  [& args]
-  (server/chsk-send! 
-   [:config/save @config] 
-   10000
-   (fn [cb-reply] 
-       (debugf "Saved"))))
+            (fn [query] (swap! config assoc :query query))))
 
 (def save-dashboard
   (register dispatcher/save-dashboard
             (fn [settings]
               (swap! config assoc :table-settings settings)
               (save))))
+
+(def set-config
+  (register dispatcher/set-config
+            (fn [new-config] (reset! config new-config))))
+
+(def get-configs
+  (register dispatcher/get-configs
+            (fn [_] (fetch-configs))))
+
+(def delete-config
+  (register dispatcher/delete-config
+            (fn [name]
+              (server/chsk-send!
+               [:config/delete name]
+               10000
+               (fn [cb-reply]
+                 (reset! config default-config))))))

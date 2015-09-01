@@ -23,9 +23,9 @@
   [:span (if-not (nil? value)
            (if (empty? @query)
              value
-             (map as-hiccup (parse-fragment (clojure.string/replace (clojure.string/replace value #"\"" "") 
-                                                                    (re-pattern @query) 
-                                                                    (str "<mark>" @query "</mark>"))))))])
+             (map #([:span {:key (as-hiccup %)}]) (parse-fragment (clojure.string/replace (clojure.string/replace value #"\"" "") 
+                                                                                          (re-pattern @query) 
+                                                                                          (str "<mark>" @query "</mark>"))))))])
 
 (defn table 
   [logs columns sorting query]
@@ -50,7 +50,7 @@
                      :else "")]
           ^{:key id} 
           [:tr {:class class}
-           (if timestamp-visible     [:td.timestamp (datetime/format :MEDIUM_DATETIME timestamp)]) 
+           (if timestamp-visible     [:td.timestamp (.format (js/moment timestamp) "DD/MM/YYYY HH:mm:ss.SSSS")]) 
            (if level-visible         [:td.level  [highlight level query]]) 
            (if message-visible       [:td.message  [highlight message query]]) 
            (if application-visible   [:td.application  [highlight application query]]) 

@@ -19,22 +19,20 @@
   (def chsk-send! send-fn) 
   (def chsk-state state))
 
-(defmulti event-msg-handler :id)
+(defmulti event-msg-handler (fn [[ev-id ev-arg]] ev-id))
 
 (defn event-msg-handler* [{:as ev-msg :keys [id ?data event]}]
   (event-msg-handler ev-msg))
 
 (defmethod event-msg-handler :default 
-  [{:as ev-msg :keys [event]}])
+  [{:as ev-msg :keys [event]}]
+  (debugf "default %s" ev-msg))
 
-(defn get-token []
-  (str js/window.location.pathname js/window.location.search))
+(defn get-token [] (str js/window.location.pathname js/window.location.search))
 
 (defn make-history []
   (doto (Html5History.)
-    (.setPathPrefix (str js/window.location.protocol
-                         "//"
-                         js/window.location.host))
+    (.setPathPrefix (str js/window.location.protocol "//" js/window.location.host))
     (.setUseFragment false)))
 
 (defn handle-url-change [e]
@@ -43,34 +41,16 @@
   (secretary/dispatch! (get-token)))
 
 (defn init []
-  (do 
-    (doto (make-history)
-      (goog.events/listen EventType.NAVIGATE
-                          #(handle-url-change %))
-      (.setEnabled true))))
+  (do (doto (make-history)
+        (goog.events/listen EventType.NAVIGATE #(handle-url-change %))
+        (.setEnabled true))))
 
-(defmethod event-msg-handler :chsk/state
-  [{:as ev-msg :keys [?data]}]
-  (if (= (get ?data :first-open?) true)
-    (init)))
-      
-(defmethod event-msg-handler :some/broadcast
-  [{:as ev-msg :keys [?data]}]
-  (debugf "Broadcast: %s" ?data))
+(defn event-loop []
+  (go (loop [[op arg] (:event (<! ch-chsk))]
+        (case op
+          :chsk/recv (event-msg-handler arg)
+          :chsk/state (if (= (get arg :first-open?) true) (init))
+          (debugf "%s received" op))
+        (recur (:event (<! ch-chsk))))))
 
-(when-let [target-el (.getElementById js/document "btn1")]
-  (.addEventListener target-el "click"
-                     (fn [ev]
-                       (debugf "Triggering event")
-                       (chsk-send! 
-                        [:logs/search {:query  {:match_all {}} 
-                                       :sort   {:level "asc"} 
-                                       :from   0 
-                                       :size   100}] 
-                        10000
-                        (fn [cb-reply] 
-                          (debugf "Reply - %s" cb-reply))))))
-
-(def router_ (atom nil))
-
-(reset! router_ (sente/start-chsk-router! ch-chsk event-msg-handler*))
+(event-loop)

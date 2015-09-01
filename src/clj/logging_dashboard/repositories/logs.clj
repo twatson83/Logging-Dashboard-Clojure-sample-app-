@@ -1,4 +1,4 @@
-(ns logging-dashboard.logs
+(ns logging-dashboard.repositories.logs
   (:require [clojurewerkz.elastisch.rest :as esr]
             [clojurewerkz.elastisch.rest.index :as esi]
             [clojurewerkz.elastisch.rest.document :as esd]
