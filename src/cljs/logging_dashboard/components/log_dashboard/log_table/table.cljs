@@ -2,7 +2,6 @@
   (:require [logging-dashboard.utils.datetime :as datetime]
             [logging-dashboard.dispatcher     :as dispatcher]
             [taoensso.encore                  :refer (tracef debugf infof warnf errorf)]
-            [hickory.core                     :refer (parse-fragment as-hiccup)]
             [cljs-flux.dispatcher             :refer [dispatch]]))
 
 (defn table-header 
@@ -23,9 +22,8 @@
   [:span (if-not (nil? value)
            (if (empty? @query)
              value
-             (map #([:span {:key (as-hiccup %)}]) (parse-fragment (clojure.string/replace (clojure.string/replace value #"\"" "") 
-                                                                                          (re-pattern @query) 
-                                                                                          (str "<mark>" @query "</mark>"))))))])
+             {"dangerouslySetInnerHTML" 
+              #js{:__html (clojure.string/replace value (re-pattern @query) (str "<mark>" @query "</mark>"))}} ))])
 
 (defn table 
   [logs columns sorting query]

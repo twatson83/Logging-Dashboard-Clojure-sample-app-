@@ -25,9 +25,29 @@
 
 ;; handlers 
 
+(defn find-first [f coll] (first (filter f coll)))
+
+(defn add-to-agg 
+  [log aggregation field]
+  (let [docs (get-in @logs [:aggregations aggregation :buckets])
+        agg (find-first #(= (:key %) (field log)) docs)
+        inc-agg #(if (= (:key %) (field log)) 
+                 (update % :doc_count inc) %)]
+    (if-not (nil? agg)
+      (swap! logs update-in [:aggregations aggregation :buckets] #(map inc-agg %))
+      (swap! logs update-in [:aggregations aggregation :buckets] #(conj % {:key (field log) :doc_count 1})))))
+
+(defn add-to-histogram-agg  [log]
+  (debugf "Hist"))
+
 (defmethod event-msg-handler :logs/messages
   [[id data]]
-  (swap! logs update :hits #(take (get-in @config-store/config [:table-settings :page-size]) (into % data))))
+  (swap! logs update :hits #(take (get-in @config-store/config [:table-settings :page-size]) (into % data)))
+  (doseq [log data]
+    (do (add-to-agg log :applications :application)
+        (add-to-agg log :services :service)
+        (add-to-histogram-agg log)
+        (add-to-agg log :levels :level))))
 
 ;; callbacks
 
