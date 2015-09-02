@@ -62,6 +62,7 @@
 
 (defn search 
   [{:keys [from size sort filters query]}]
+  (debugf "Filters %s" filters)
   (let [filter (build-query filters)
         res (esd/search conn "logs" "log" 
                         :query (if (or (nil? query) (empty? query)) 

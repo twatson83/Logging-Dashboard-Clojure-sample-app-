@@ -22,8 +22,10 @@
   [:span (if-not (nil? value)
            (if (empty? @query)
              value
-             {"dangerouslySetInnerHTML" 
-              #js{:__html (clojure.string/replace value (re-pattern @query) (str "<mark>" @query "</mark>"))}} ))])
+             {"dangerouslySetInnerHTML"               
+              #js{:__html (reduce #(clojure.string/replace %1 (re-pattern %2) (str "<mark>" %2 "</mark>")) 
+                                  value 
+                                  (re-seq (re-pattern (str "(?i)" @query)) value))}} ))])
 
 (defn table 
   [logs columns sorting query]

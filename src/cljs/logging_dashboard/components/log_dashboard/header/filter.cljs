@@ -13,7 +13,9 @@
 (defn field-list 
   [node columns]
   (let [sorted-columns (into (sorted-map-by (fn [k1 k2] (compare (get-in @columns [k1 :label]) (get-in @columns [k2 :label])))) @columns)]
-    [:select.form-control.input-xs.fields {:field :list :value (:field @node) 
+    (if (nil? (:field @node)) 
+      (swap! node assoc :field (key (first sorted-columns))))
+    [:select.form-control.input-xs.fields {:field :list :value (if-not (nil? (:field @node)) (:field @node) (key (first sorted-columns))) 
                                            :on-change #(swap! node assoc :field (-> % .-target .-value keyword)) }
      (for [[k v] sorted-columns]
        [:option {:key (str (:id @node) k) :value k} (:label v)])]))
