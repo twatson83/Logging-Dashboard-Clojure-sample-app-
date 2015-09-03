@@ -17,6 +17,14 @@
 
 (check-ttl)
 
+(def field-map {:Application :application
+                :Service :service
+                :Level :level
+                :exceptionJson :exceptionJson
+                :message :message
+                :session :session
+                :timestamp :timestamp})
+
 (defn iso->unix 
   [datetime]
   (-> datetime tf/parse tc/to-long))
@@ -33,21 +41,22 @@
 
 (defmethod filter-messages :equals
   [filter log]
-  (= ((:field filter) log) (:value filter)))
+  (= (((:field filter) field-map) log) (:value filter)))
 
 (defmethod filter-messages :not-equals
   [filter log]
-  (not= ((:field filter) log) (:value filter)))
+  (do (debugf "lv %s, fv %s" ((:field filter) log) (:value filter))
+      (not= (((:field filter) field-map) log) (:value filter))))
 
 (defmethod filter-messages :less-than
   [filter log]
   (if (= (:type filter) "date")
-    (< (iso->unix ((:field filter) log)) (:value filter))
-    (< ((:field filter) log) (:value filter))))
+    (< (iso->unix (((:field filter) field-map) log)) (:value filter))
+    (< (((:field filter) field-map) log) (:value filter))))
 
 (defmethod filter-messages :greater-than
   [filter log]
-  (> ((:field filter) log) (:value filter)))
+  (> (((:field filter) field-map) log) (:value filter)))
 
 (defmethod filter-messages :last-timespan
   [filter log]
@@ -55,16 +64,16 @@
 
 (defmethod filter-messages :date-range
   [filter log]
-  (and (> (iso->unix ((:field filter) log)) (:from filter)) (< (iso->unix ((:field filter) log)) (:to filter))))
+  (and (> (iso->unix (((:field filter) field-map) log)) (:from filter)) (< (iso->unix (((:field filter) field-map) log)) (:to filter))))
 
 (defn filter-by-query
   [query log]
   (let [pattern (re-pattern (str "(?i)" query))]
-    (= true (some true? (map #(boolean (re-find pattern (second %1))) log)))))
+    (= true (some true? (map #(if (nil? (second %)) false (boolean (re-find pattern (second %1)))) log)))))
 
 (defn filter-message
   [config log]
-  (if (not= "" (:query config))
+  (if (and (not= (:query config) nil) (not= "" (:query config)))
     (and (filter-by-query (:query config) log) (filter-messages (:filters config) log))
     (filter-messages (:filters config) log)))
 

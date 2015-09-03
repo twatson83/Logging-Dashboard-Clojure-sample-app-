@@ -4,7 +4,7 @@
 (def histogram (reagent/atom []))
 
 (defn build-series []
-  (map #(vector (:key %) (:doc_count %)) @histogram))
+  (map #(vector (:key %) (:doc_count %)) (sort-by :key @histogram)))
 
 (defn chart-config [] 
   {:chart {:type "column"}

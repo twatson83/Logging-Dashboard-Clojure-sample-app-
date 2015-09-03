@@ -1,5 +1,5 @@
 (ns logging-dashboard.components.log_dashboard.level_table
-  (:require [reagent.core :as reagent][taoensso.encore                  :refer (tracef debugf infof warnf errorf)]))
+  (:require [reagent.core :as reagent][taoensso.encore   :refer (tracef debugf infof warnf errorf)]))
 
 (defn level-table
   [logs]
@@ -12,7 +12,7 @@
        [:th [:a {:href "#" :on-click prevent-default} "Level"]]
        [:th [:a {:href "#" :on-click prevent-default} "Count"]]]]
      [:tbody
-      (for [doc levels]
+      (for [doc (sort-by :doc_count #(compare %2 %1) levels)]
         ^{:key (str "level-table" (:key doc))} 
         [:tr 
          [:td (:key doc)]
