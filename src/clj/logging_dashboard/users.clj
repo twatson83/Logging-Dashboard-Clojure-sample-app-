@@ -15,8 +15,6 @@
         (swap! users dissoc k)))
     (recur (inc i))))
 
-(check-ttl)
-
 (def field-map {:Application :application
                 :Service :service
                 :Level :level
@@ -37,7 +35,7 @@
 
 (defmethod filter-messages :or
   [filter log]
-  (every? #(filter-messages % log) (:filters filter)))
+  (= true (some true? (map #(filter-messages % log) (:filters filter)))))
 
 (defmethod filter-messages :equals
   [filter log]

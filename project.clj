@@ -21,7 +21,6 @@
                  [org.clojars.frozenlock/reagent-modals "0.2.3"]
                  [reagent-forms "0.5.5"]
                  [cljs-flux "0.1.2"]
-                 [org.apache.commons/commons-lang3 "3.1"]
                  [jarohen/nomad "0.7.1"]
                  [clj-time "0.11.0"]
                  [com.lucasbradstreet/cljs-uuid-utils "1.0.2"]]

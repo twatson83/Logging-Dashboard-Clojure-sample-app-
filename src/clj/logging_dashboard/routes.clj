@@ -95,5 +95,3 @@
         (reset! log-handler/messages (apply dissoc @log-handler/messages (keys m)))))
     (recur (inc i))))
 
-(send-messages)
-

@@ -1,4 +1,5 @@
 {:es "http://ruffer-bpwfs-d:9200"
  :queue "LoggingDashboard"
  :exchange "RufferLoggingServiceRMessageBusLoggerCommandsLogCommand"
- :rabbitmq "lonappdev04"}
+ :rabbitmq "lonappdev04"
+ :port 7676}
