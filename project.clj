@@ -29,6 +29,7 @@
             [lein-bower "0.5.1"]
             [cider/cider-nrepl "0.8.1"]
             [lein-npm "0.6.1"]]
+  
   :source-paths ["src/clj" "src/cljs"]
   :ring {:handler logging-dashboard.handler/app}
   :profiles
