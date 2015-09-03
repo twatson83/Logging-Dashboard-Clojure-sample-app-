@@ -14,13 +14,10 @@ pom.xml.asc
 .DS_Store
 /classes
 /lib
-/target
 closure
 /core.js
 /coreadvanced.js
 /coresimple.js
-/out
-*out
 .lein*
 /pom.xml
 .repl*

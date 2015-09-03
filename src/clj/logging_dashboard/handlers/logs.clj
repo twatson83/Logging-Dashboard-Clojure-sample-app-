@@ -13,6 +13,8 @@
 (defconfig config (io/resource "config/config.edn"))
 
 (def messages (atom {}))
+(def conn (atom nil))
+(def channel (atom nil))
 
 (defn message-handler
   [ch meta ^bytes payload]
@@ -26,8 +28,10 @@
                                               :service (get message "Service")
                                               :session (get message "Session")})))
 
-(def conn  (rmq/connect {:host (:rabbitmq (config))}))
-(def channel  (lch/open conn))
-(lq/declare channel (:queue (config)) {:exclusive false :auto-delete true})
-(lq/bind channel (:queue (config)) (:exchange (config)))
-(lc/subscribe channel (:queue (config)) message-handler {:auto-ack true})
+(defn connect []
+  (do
+    (reset! conn (rmq/connect {:host (:rabbitmq (config))}))
+    (reset! channel (lch/open @conn))
+    (lq/declare @channel (:queue (config)) {:exclusive false :auto-delete true})
+    (lq/bind @channel (:queue (config)) (:exchange (config)))
+    (lc/subscribe @channel (:queue (config)) message-handler {:auto-ack true})))
