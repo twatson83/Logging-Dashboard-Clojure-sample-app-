@@ -34,16 +34,21 @@
         message-visible (get-in @columns [:message :visible])
         application-visible (get-in @columns [:Application :visible])
         service-visible (get-in @columns [:Service :visible])
+        session-visible (get-in @columns [:session :visible])
         exceptionJson-visible (get-in @columns [:exceptionJson :visible])]
     [:table.table.table-bordered.table-hover.table-condensed
      [:thead
       [:tr
-       (for [[k v] @columns]
-         (if (:visible v) 
-           ^{:key (str "th" k)} [table-header k v sorting]))]]
+       (if timestamp-visible [table-header :timestamp (:timestamp @columns) sorting])
+       (if level-visible [table-header :Level (:Level @columns) sorting])
+       (if message-visible [table-header :message (:message @columns) sorting])
+       (if application-visible [table-header :Application (:Application @columns) sorting])
+       (if service-visible [table-header :Service (:Service @columns) sorting])
+       (if session-visible [table-header :session (:session @columns) sorting])
+       (if exceptionJson-visible [table-header :exceptionJson (:exceptionJson @columns) sorting])]]
      [:tbody
       (for [log (get @logs :hits)]
-        (let [{:keys [id timestamp level message application service exceptionJson]} log
+        (let [{:keys [id timestamp level message application service session exceptionJson]} log
               class (cond
                      (= (clojure.string/lower-case level) "error") "danger"
                      (= (clojure.string/lower-case level) "warn")  "warning"
@@ -55,4 +60,5 @@
            (if message-visible       [:td.message  [highlight message query]]) 
            (if application-visible   [:td.application  [highlight application query]]) 
            (if service-visible       [:td.service  [highlight service query]]) 
+           (if session-visible       [:td.session [highlight session query]]) 
            (if exceptionJson-visible [:td.exceptionJson  [highlight exceptionJson query]])]))]]))

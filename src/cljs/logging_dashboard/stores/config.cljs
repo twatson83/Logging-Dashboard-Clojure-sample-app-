@@ -14,13 +14,14 @@
              :message       {:label "Message"     :type :string :visible true}
              :Application   {:label "Application" :type :string :visible true}
              :Service       {:label "Service"     :type :string :visible true}
+             :session       {:label "Session"     :type :string :visible true}
              :exceptionJson {:label "Exception"   :type :string :visible true}}
    :sorting {:field :timestamp :direction "desc"}
    :query ""
    :filters {:id "1" :type :and :filters [{:id "2" :type :last-timespan :value 3600000}] }
    :table-settings {:page-size 50 :page-num 0 :refresh-interval 0 :name ""
                     :histogram-enabled true :pie-charts-enabled true
-                    :update-type "realtime"}})
+                    :update-type "none" :streaming-status "started"}})
 
 (def config (local-storage (atom default-config) :config))
 
@@ -30,13 +31,15 @@
 (add-watch config :auto-update 
            (fn [_ _ old new] 
              (let [old-type (get-in old [:table-settings :update-type])
-                   new-type (get-in new [:table-settings :update-type])]
-               (if (= new-type "realtime")
+                   new-type (get-in new [:table-settings :update-type])
+                   streaming-status (get-in new [:table-settings :streaming-status])]
+               (if (and (= new-type "realtime") (= streaming-status "started"))
                  (server/chsk-send! [:logs/start-streaming @config])
                  (server/chsk-send! [:logs/stop-streaming])))))
 
 (go (while true (<! (timeout 60000)) 
-           (if (= (get-in @config [:table-settings :update-type]) "realtime")
+           (if (and (= (get-in @config [:table-settings :update-type]) "realtime")
+                    (= (get-in @config [:table-settings :streaming-status]) "started"))
              (server/chsk-send! [:logs/start-streaming @config]))))
 
 (def configs (atom []))
@@ -55,7 +58,7 @@
        (not= "" refresh-interval)
        (>= refresh-interval 0)))
 
-(defn- save [] (server/chsk-send! [:config/save @config]))
+;;
 
 (defn- fetch-configs []
   (server/chsk-send!
@@ -63,6 +66,8 @@
    100000
    (fn [cb-reply]
      (reset! configs cb-reply))))
+
+(defn- save [] (server/chsk-send! [:config/save @config] 100000 #(fetch-configs)))
 
 ;; Callbacks
 (def update-columns
@@ -112,3 +117,13 @@
                10000
                (fn [cb-reply]
                  (reset! config default-config))))))
+
+(def start-streaming
+  (register dispatcher/start-streaming
+            (fn [_] 
+              (swap! config assoc-in [:table-settings :streaming-status] "started"))))
+
+(def stop-streaming
+  (register dispatcher/stop-streaming
+            (fn [_] 
+              (swap! config assoc-in [:table-settings :streaming-status] "stopped"))))

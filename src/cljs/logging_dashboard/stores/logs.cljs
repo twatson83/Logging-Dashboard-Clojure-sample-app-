@@ -38,7 +38,17 @@
       (swap! logs update-in [:aggregations aggregation :buckets] #(conj % {:key (field log) :doc_count 1})))))
 
 (defn add-to-histogram-agg  [log]
-  (debugf "Hist"))
+  (let [docs (get-in @logs [:aggregations :histogram :buckets])
+        timestamp (* 1000 (.unix (js/moment (:timestamp log))))
+        agg (find-first #(and (>= timestamp (:key %)) (<= timestamp (+ (:key %) 60000))) docs)
+        inc-agg #(if (and (>= timestamp (:key %)) (<= timestamp (+ (:key %) 60000))) 
+                 (update % :doc_count inc) %)]
+    (if-not (nil? agg)
+      (swap! logs update-in [:aggregations :histogram :buckets] #(map inc-agg %))
+      (let [bucket-timestamp (* 60000 (int (/ timestamp 60000)))]
+        (swap! logs update-in [:aggregations :histogram :buckets] #(conj % {:key bucket-timestamp 
+                                                                            :key_as_string (.format (.unix js/moment (/ bucket-timestamp 1000)))
+                                                                            :doc_count 1}))))))
 
 (defmethod event-msg-handler :logs/messages
   [[id data]]

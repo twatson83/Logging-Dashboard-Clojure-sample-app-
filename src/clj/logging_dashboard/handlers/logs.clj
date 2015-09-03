@@ -12,7 +12,6 @@
 
 (defconfig config (io/resource "config/config.edn"))
 
-(def users (atom {}))
 (def messages (atom {}))
 
 (defn message-handler
@@ -32,19 +31,3 @@
 (lq/declare channel (:queue (config)) {:exclusive false :auto-delete true})
 (lq/bind channel (:queue (config)) (:exchange (config)))
 (lc/subscribe channel (:queue (config)) message-handler {:auto-ack true})
-
-(defn check-ttl []
-  (go-loop [i 0]
-    (<! (async/timeout 60000))
-    (doseq [[k v] @users]      
-      (if (< (:ttl v) (System/currentTimeMillis))
-        (swap! users dissoc k)))
-    (recur (inc i))))
-
-(check-ttl)
-
-(defn start-streaming [id config]
-  (swap! users assoc id {:config config :ttl (+ (System/currentTimeMillis) 600000) }))
-
-(defn stop-streaming [id]
-  (swap! users dissoc id))

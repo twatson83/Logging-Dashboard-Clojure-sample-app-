@@ -40,10 +40,6 @@
   [filter]
   {:not {:term {((:field filter) exact-fields) (:value filter)}}})
 
-(defmethod build-query :contains
-  [filter]
-  {:query {:match {(:field filter) (:value filter)}}})
-
 (defmethod build-query :less-than
   [filter]
   {:range {(:field filter) {:to (:value filter)}}})
@@ -58,11 +54,10 @@
 
 (defmethod build-query :date-range
   [filter]
-  {:range {"timestamp" {:from (:from filter) :to (:to filter)}}})
+  {:range {(:field filter) {:from (:from filter) :to (:to filter)}}})
 
 (defn search 
   [{:keys [from size sort filters query]}]
-  (debugf "Filters %s" filters)
   (let [filter (build-query filters)
         res (esd/search conn "logs" "log" 
                         :query (if (or (nil? query) (empty? query)) 

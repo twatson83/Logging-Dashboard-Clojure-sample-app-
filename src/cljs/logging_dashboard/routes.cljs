@@ -14,7 +14,8 @@
   (do (render-component [log-dashboard] (.getElementById js/document "content"))
       (dispatch dispatcher/logs-search nil)
       (dispatch dispatcher/get-configs nil)
-      (if (= (get-in @config-store/config [:table-settings :update-type]) "realtime")
+      (if (and (= (get-in @config-store/config [:table-settings :update-type]) "realtime")
+               (= (get-in @config-store/config [:table-settings :streaming-status]) "started"))
         (dispatch dispatcher/start-streaming nil))))
 
 (defroute "*" []

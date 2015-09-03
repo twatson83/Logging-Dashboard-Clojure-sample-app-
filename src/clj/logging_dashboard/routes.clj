@@ -6,6 +6,7 @@
             [taoensso.sente            :as sente]
             [logging-dashboard.repositories.logs :as log-db]
             [logging-dashboard.handlers.logs     :as log-handler]
+            [logging-dashboard.users   :as users]
             [logging-dashboard.repositories.configs :as configs]
             [taoensso.timbre           :as timbre :refer (tracef debugf infof warnf errorf)]
             [taoensso.sente.server-adapters.http-kit :refer (sente-web-server-adapter)]))
@@ -65,11 +66,11 @@
 
 (defmethod event-msg-handler :logs/start-streaming
   [{:keys [?data ring-req]}]
-  (log-handler/start-streaming (get-in ring-req [:session :uid]) ?data))
+  (users/start-streaming (get-in ring-req [:session :uid]) ?data))
 
 (defmethod event-msg-handler :logs/stop-streaming
   [{:keys [ring-req]}]
-  (log-handler/stop-streaming (get-in ring-req [:session :uid])))
+  (users/stop-streaming (get-in ring-req [:session :uid])))
 
 (defmethod event-msg-handler :config/save
   [{:keys [?data ?reply-fn]}]
@@ -89,9 +90,9 @@
     (let [m @log-handler/messages
           message-list (vals m)]
       (when (> (count message-list) 0)
-        (doseq [k (keys @log-handler/users)]      
+        (doseq [[k v]  @users/users]      
           (if-not (nil? k)
-            (chsk-send! k [:logs/messages message-list])))
+            (chsk-send! k [:logs/messages (filter #(= true (users/filter-messages v %)) message-list)])))
         (reset! log-handler/messages (apply dissoc @log-handler/messages (keys m)))))
     (recur (inc i))))
 

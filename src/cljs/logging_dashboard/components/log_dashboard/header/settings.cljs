@@ -15,7 +15,7 @@
 (defn settings-modal
   [table-settings]
   (let [doc (reagent/atom {:page-size (:page-size @table-settings) :refresh-interval (:refresh-interval @table-settings)
-                           :name (:name @table-settings) :update-type (:update-type @table-settings)
+                           :name (:name @table-settings) :update-type (:update-type @table-settings) :streaming-status (:streaming-status @table-settings)
                            :histogram-enabled (:histogram-enabled @table-settings) :pie-charts-enabled (:pie-charts-enabled @table-settings)})]
     (fn []
       [:div
