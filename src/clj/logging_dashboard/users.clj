@@ -1,5 +1,8 @@
 (ns logging-dashboard.users
   (:require [taoensso.timbre           :as timbre :refer (tracef debugf infof warnf errorf)]
+            [clj-time.core :as t]
+            [clj-time.coerce :as tc]
+            [clj-time.format :as tf]
             [clojure.core.async        :as async :refer [<! <!! chan go thread go-loop]]))
 
 (def users (atom {}))
@@ -13,6 +16,10 @@
     (recur (inc i))))
 
 (check-ttl)
+
+(defn iso->unix 
+  [datetime]
+  (-> datetime tf/parse tc/to-long))
 
 (defmulti filter-messages (fn [f l] (:type f)))
 
@@ -34,7 +41,9 @@
 
 (defmethod filter-messages :less-than
   [filter log]
-  (< ((:field filter) log) (:value filter)))
+  (if (= (:type filter) "date")
+    (< (iso->unix ((:field filter) log)) (:value filter))
+    (< ((:field filter) log) (:value filter))))
 
 (defmethod filter-messages :greater-than
   [filter log]
@@ -42,11 +51,22 @@
 
 (defmethod filter-messages :last-timespan
   [filter log]
-  (> (:timestamp log) (- (System/currentTimeMillis) (:value filter))))
+  (> (iso->unix (:timestamp log)) (- (System/currentTimeMillis) (:value filter))))
 
 (defmethod filter-messages :date-range
   [filter log]
-  (and (> ((:field filter) log) (:from filter)) (< (:timestamp log) (:to filter))))
+  (and (> (iso->unix ((:field filter) log)) (:from filter)) (< (iso->unix ((:field filter) log)) (:to filter))))
+
+(defn filter-by-query
+  [query log]
+  (let [pattern (re-pattern (str "(?i)" query))]
+    (= true (some true? (map #(boolean (re-find pattern (second %1))) log)))))
+
+(defn filter-message
+  [config log]
+  (if (not= "" (:query config))
+    (and (filter-by-query (:query config) log) (filter-messages (:filters config) log))
+    (filter-messages (:filters config) log)))
 
 (defn start-streaming [id config]
   (swap! users assoc id {:config config :ttl (+ (System/currentTimeMillis) 600000)}))

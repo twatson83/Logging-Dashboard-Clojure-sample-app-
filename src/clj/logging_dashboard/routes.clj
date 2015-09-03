@@ -90,9 +90,8 @@
     (let [m @log-handler/messages
           message-list (vals m)]
       (when (> (count message-list) 0)
-        (doseq [[k v]  @users/users]      
-          (if-not (nil? k)
-            (chsk-send! k [:logs/messages (filter #(= true (users/filter-messages v %)) message-list)])))
+        (doseq [k (keys @users/users)]      
+          (chsk-send! k [:logs/messages (filter #(= true (users/filter-message (get (get @users/users k) :config) %)) message-list)]))
         (reset! log-handler/messages (apply dissoc @log-handler/messages (keys m)))))
     (recur (inc i))))
 
