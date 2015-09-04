@@ -141,3 +141,10 @@
 (def stop-streaming
   (register dispatcher/stop-streaming
             (fn [_] (server/chsk-send! [:logs/stop-streaming]))))
+
+(def upsert-daterange-filter
+  (register dispatcher/upsert-daterange-filter
+            (fn [& args]
+              (wait-for dispatcher/upsert-daterange-filter [config-store/upsert-daterange-filter])
+              (search))))
+ 

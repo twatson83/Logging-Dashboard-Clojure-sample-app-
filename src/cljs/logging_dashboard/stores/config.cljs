@@ -11,8 +11,7 @@
 (def default-config 
   {:columns {:timestamp     {:label "Timestamp"   :type :date   :visible true}
              :Level         {:label "Level"       :type :string :visible true}
-             :message       {:label "Message"     :type :string :visible true}
-             :Application   {:label "Application" :type :string :visible true}
+             :message       {:label "Message"     :type :string :visible true} :Application   {:label "Application" :type :string :visible true}
              :Service       {:label "Service"     :type :string :visible true}
              :session       {:label "Session"     :type :string :visible true}
              :exceptionJson {:label "Exception"   :type :string :visible true}}
@@ -132,3 +131,13 @@
   (register dispatcher/stop-streaming
             (fn [_] 
               (swap! config assoc-in [:table-settings :streaming-status] "stopped"))))
+
+(def upsert-daterange-filter
+  (register dispatcher/upsert-daterange-filter
+            (fn [range]
+              (let [filters (get-in @config [:filters :filters])
+                    range-filter (first (filter #(= :date-range (:type %)) filters))
+                    new-filter {:type :date-range :field (:field :timestamp) :from (:from range) :to (:to range)}]
+                (if-not (nil? range-filter)
+                  (swap! config assoc-in [:filters :filters] (filter #(if (= :date-range (:type %)) new-filter %) filters))
+                  (swap! config assoc-in [:filters :filters] (into filters new-filter)))))))

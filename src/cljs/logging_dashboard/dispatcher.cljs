@@ -15,3 +15,4 @@
 (def delete-config   (dispatcher))
 (def start-streaming (dispatcher))
 (def stop-streaming  (dispatcher))
+(def upsert-daterange-filter (dispatcher))
