@@ -7,6 +7,29 @@
 
 (def logs (atom {:searching false :hits '()}))
 
+(defn tree-search
+  ([filter]
+   (tree-search filter 0))
+  ([filter start-time]
+   (let [time (max (case (:type filter)
+                     :greater-than (:value filter)
+                     :date-range (:from filter)
+                     :last-timespan (- (* 1000 (.unix (js/moment))) (:value filter))
+                     nil) start-time)
+         filters (:filters filter)]
+     (if (or (nil? filters) (= 0 (count filters))) 
+       time     
+       (apply max (map #(tree-search % time) filters))))))
+
+(defn process-data
+  []
+  (let [start-time (tree-search (:filters @config-store/config))   
+        histogram (get-in @logs [:aggregations :histogram :buckets])]
+    (if-not (and (nil? start-time) (nil? histogram))
+      (swap! logs assoc-in [:aggregations :histogram :buckets] (filter #(> (:key %) start-time) histogram)))))
+
+(js/setInterval process-data 10000)
+
 (defn- search []
   (let [{:keys [field direction]} (:sorting @config-store/config)
         {:keys [page-size page-num]} (:table-settings @config-store/config)

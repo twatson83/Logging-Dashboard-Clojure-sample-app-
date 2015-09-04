@@ -6,8 +6,6 @@
             [cljs-uuid-utils.core             :as uuid]
             [taoensso.encore                  :refer (tracef debugf infof warnf errorf)]))
 
-(defn after-date (atom nil))
-
 ;; Field inputs
 
 (defmulti field-input (fn [type _] type))

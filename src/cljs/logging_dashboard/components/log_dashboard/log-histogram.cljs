@@ -1,6 +1,8 @@
 (ns logging-dashboard.components.log_dashboard.log_histogram
   (:require [reagent.core :as reagent]))
 
+(.setOptions js/Highcharts (clj->js {:global {:useUTC false}}))
+
 (def histogram (reagent/atom []))
 
 (defn build-series []
