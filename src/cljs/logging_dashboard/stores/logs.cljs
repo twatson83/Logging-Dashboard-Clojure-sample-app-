@@ -96,6 +96,12 @@
               (wait-for dispatcher/update-settings [config-store/update-settings])
               (search))))
 
+(def update-page
+  (register dispatcher/update-page
+            (fn [& args]  
+              (wait-for dispatcher/update-page [config-store/update-page])
+              (search))))
+
 (def update-filters
   (register dispatcher/update-filters 
             (fn [& args]  

@@ -83,6 +83,11 @@
             (fn [settings]
               (swap! config assoc :table-settings settings))))
 
+(def update-page
+  (register dispatcher/update-page
+            (fn [num]
+              (swap! config assoc-in [:table-settings :page-num] num))))
+
 (def update-filters
   (register dispatcher/update-filters
             (fn [filters] (swap! config assoc :filters filters))))

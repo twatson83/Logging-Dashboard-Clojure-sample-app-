@@ -4,6 +4,7 @@
 (def update-columns  (dispatcher))
 (def update-sorting  (dispatcher))
 (def update-settings (dispatcher))
+(def update-page     (dispatcher))
 (def update-filters  (dispatcher))
 (def logs-search     (dispatcher))
 (def reset-config    (dispatcher))

@@ -4,12 +4,10 @@
 
 (defn pager 
   [settings logs]
-  (let [{:keys [page-num page-size refresh-interval]} @settings
+  (let [{:keys [page-num page-size]} @settings
         num-of-logs (:number @logs)
         on-click #(do (.preventDefault %1) 
-                      (dispatch dispatcher/update-settings {:page-num (%2 page-num) 
-                                                            :page-size page-size
-                                                            :refresh-interval refresh-interval}))
+                      (dispatch dispatcher/update-page (%2 page-num)))
         inc-page #(on-click % inc)
         dec-page #(on-click % dec)]
     [:nav.log-pager
@@ -21,4 +19,3 @@
                                   (+ 1) 
                                   (* page-size) 
                                   (< num-of-logs)) inc-page #(.preventDefault %))} ">>"]]]]))
-
