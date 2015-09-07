@@ -21,7 +21,7 @@
    :filters {:id "1" :type :and :filters [{:id "2" :type :last-timespan :value 3600000}] }
    :table-settings {:page-size 50 :page-num 0 :refresh-interval 0 :name ""
                     :histogram-enabled true :pie-charts-enabled true
-                    :update-type "none" :streaming-status "started"}})
+                    :update-type "realtime" :streaming-status "started"}})
 
 (def config (local-storage (atom default-config) :config))
 
