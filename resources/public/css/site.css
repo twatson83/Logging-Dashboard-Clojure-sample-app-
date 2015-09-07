@@ -186,3 +186,6 @@ body mark {
 .update-type {
     margin-bottom: 0;
 }
+.level-filter{
+    width: 10px;
+}
