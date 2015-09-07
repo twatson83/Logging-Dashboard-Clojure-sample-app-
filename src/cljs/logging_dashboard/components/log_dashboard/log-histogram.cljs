@@ -12,7 +12,11 @@
   (map #(vector (:key %) (:doc_count %)) (sort-by :key @histogram)))
 
 (defn chart-config [] 
-  {:chart {:type "column" :zoomType "x" :events {:selection #(dispatch dispatcher/upsert-daterange-filter {:min (.-min  (aget (.-xAxis %) 0)) :max (.-max  (aget (.-xAxis %) 0))})}}
+  {:chart {:type "column" :zoomType "x" 
+           :events {:selection #(if-not (nil? (.-xAxis %)) 
+                                  (dispatch dispatcher/upsert-daterange-filter {:min (.-min  (aget (.-xAxis %) 0)) 
+                                                                                :max (.-max  (aget (.-xAxis %) 0))})
+                                  (dispatch dispatcher/reset-daterange-filter nil))}}
    :title {:text "" :floating true} 
    :credits {:enabled false}
    :legend {:enabled false}
@@ -25,7 +29,8 @@
 
 (defn pie-will-unmount [] (.destroy (.highcharts (js/$ "#histogram"))))
 
-(defn pie-updated [] (.setData (aget (.-series (.highcharts (js/$ "#histogram"))) 0) (clj->js (build-series))))
+(defn pie-updated [] (do (.setExtremes (aget (.-xAxis (.highcharts (js/$ "#histogram"))) 0) nil nil) 
+                         (.setData (aget (.-series (.highcharts (js/$ "#histogram"))) 0) (clj->js (build-series)))))
 
 (defn pie 
   [logs] 

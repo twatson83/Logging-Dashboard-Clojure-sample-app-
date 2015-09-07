@@ -16,3 +16,4 @@
 (def start-streaming (dispatcher))
 (def stop-streaming  (dispatcher))
 (def upsert-daterange-filter (dispatcher))
+(def reset-daterange-filter (dispatcher))

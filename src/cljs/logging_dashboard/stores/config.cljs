@@ -6,6 +6,7 @@
             [logging-dashboard.utils.server  :as server]
             [taoensso.encore                  :refer (tracef debugf infof warnf errorf)]
             [cljs.core.async        :as async  :refer (<! >! put! chan timeout)]
+            [cljs-uuid-utils.core             :as uuid]
             [cljs-flux.dispatcher         :refer [register]]))
 
 (def default-config 
@@ -135,9 +136,18 @@
 (def upsert-daterange-filter
   (register dispatcher/upsert-daterange-filter
             (fn [range]
-              (let [filters (get-in @config [:filters :filters])
-                    range-filter (first (filter #(= :date-range (:type %)) filters))
-                    new-filter {:type :date-range :field (:field :timestamp) :from (:from range) :to (:to range)}]
-                (if-not (nil? range-filter)
-                  (swap! config assoc-in [:filters :filters] (filter #(if (= :date-range (:type %)) new-filter %) filters))
-                  (swap! config assoc-in [:filters :filters] (into filters new-filter)))))))
+              (let [filters (filter #(if (or (= :date-range (:type %)) 
+                                             (= :last-timespan (:type %))) false true) 
+                                    (get-in @config [:filters :filters]))
+                    new-filter {:id (uuid/make-random-uuid) :type :date-range :field :timestamp :from (:min range) :to (:max range)}]
+                (swap! config assoc-in [:filters :filters] (conj filters new-filter))))))
+
+(def reset-daterange-filter
+  (register dispatcher/reset-daterange-filter
+            (fn [_]
+              (let [filters (filter #(if (or (= :date-range (:type %)) 
+                                             (= :last-timespan (:type %))) false true) 
+                                    (get-in @config [:filters :filters]))
+                    new-filter {:id (uuid/make-random-uuid) :type :last-timespan :field :timestamp :value 3600000}]
+                
+                (swap! config assoc-in [:filters :filters] (conj filters new-filter))))))

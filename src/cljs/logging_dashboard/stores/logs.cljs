@@ -148,3 +148,9 @@
               (wait-for dispatcher/upsert-daterange-filter [config-store/upsert-daterange-filter])
               (search))))
  
+(def reset-daterange-filter
+  (register dispatcher/reset-daterange-filter
+            (fn [& args]
+              (wait-for dispatcher/reset-daterange-filter [config-store/reset-daterange-filter])
+              (search))))
+ 
