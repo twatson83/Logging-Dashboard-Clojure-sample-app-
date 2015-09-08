@@ -53,7 +53,7 @@
          [:div.row
           [:div.col-md-4 [application-pie logs]]
           [:div.col-md-4 [service-pie logs]]
-          [:div.col-md-4 [level-table logs]]])
+          [:div.col-md-4 [level-table logs filters]]])
        [:div.row
         [:div.col-md-12
          [log-table columns table-settings filters sorting logs query]]]])))
