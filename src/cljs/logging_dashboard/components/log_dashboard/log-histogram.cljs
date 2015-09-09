@@ -35,7 +35,7 @@
 (defn pie 
   [logs] 
   (reset! histogram (get-in @logs [:aggregations :histogram :buckets]))
-  [:div#histogram {:style {:min-width "100%" :height "200px" :margin "0 auto" :margin-bottom "15px"}}])
+  [:div#histogram {:style {:height "200px" :margin "0 auto" :margin-bottom "15px"}}])
 
 (defn log-histogram
   [logs]
