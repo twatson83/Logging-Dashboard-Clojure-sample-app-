@@ -4,6 +4,11 @@ body { padding-top: 50px; }
     font-size: 11px;
     margin-top: 15px
 }
+
+.content{
+    padding-top: 7px;
+}
+
 .timestamp {
     min-width: 150px;
 }
@@ -176,6 +181,7 @@ html, body, .content {
 
 .search-query {
     max-width: 350px;
+    width: 100% !important;
     display: inline-block;
 }
 
@@ -193,4 +199,8 @@ body mark {
 td span {
     max-width: 200px;
     display: inline-block;
+}
+
+.navbar-left {
+    width: 450px !important;
 }

@@ -153,4 +153,3 @@
             (fn [& args]
               (wait-for dispatcher/reset-daterange-filter [config-store/reset-daterange-filter])
               (search))))
- 

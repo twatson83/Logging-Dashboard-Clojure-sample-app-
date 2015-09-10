@@ -46,7 +46,6 @@
         (create-timer #(if-not (:searching @logs) 
                          (dispatch dispatcher/logs-search nil)) (:refresh-interval @table-settings)))
       [:div.container-fluid
-       [header columns filters table-settings logs query]
        (if (:histogram-enabled @table-settings) 
          [:div.row [:div.col-md-12 [log-histogram logs]]])
        (if (:pie-charts-enabled @table-settings)

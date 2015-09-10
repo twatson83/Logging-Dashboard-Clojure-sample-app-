@@ -1,4 +1,5 @@
 (ns logging-dashboard.repositories.logs
+  (import java.io.File)
   (:require [clojurewerkz.elastisch.rest :as esr]
             [clojurewerkz.elastisch.rest.index :as esi]
             [clojurewerkz.elastisch.rest.document :as esd]
@@ -10,7 +11,7 @@
             [clojure.java.io :as io]
             [clojure.pprint :as pp]))
 
-(defconfig config (io/resource "config/config.edn"))
+(defconfig config (io/as-url (File. "config/config.edn")))
 
 (def conn (esr/connect (:es (config)) {:conn-timeout 5000}))
 

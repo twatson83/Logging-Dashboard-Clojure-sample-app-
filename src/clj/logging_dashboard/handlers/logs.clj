@@ -1,4 +1,5 @@
 (ns logging-dashboard.handlers.logs
+  (import java.io.File)
   (:require [taoensso.timbre           :as timbre :refer (tracef debugf infof warnf errorf)]
             [clojure.java.io :as io]
             [clojure.core.async        :as async :refer [<! <!! chan go thread go-loop]]
@@ -10,7 +11,7 @@
             [langohr.basic     :as lb]
             [clojure.data.json :as json]))
 
-(defconfig config (io/resource "config/config.edn"))
+(defconfig config (io/as-url (File. "config/config.edn")))
 
 (def messages (atom {}))
 (def conn (atom nil))

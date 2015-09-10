@@ -10,5 +10,5 @@
                         (dispatch dispatcher/start-streaming nil)))]
     (fn []
       [:a.btn.btn-default.btn-sm.pull-right.log-table-button 
-       {:href "#" :on-click on-click}
+       {:href "#" :on-click on-click :class (if (= (:streaming-status @settings) "started") "btn-danger" "btn-warning")}
        [:span (if (= (:streaming-status @settings) "started") "Streaming" "Paused")]])))

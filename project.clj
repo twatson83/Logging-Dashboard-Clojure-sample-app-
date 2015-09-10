@@ -29,19 +29,18 @@
             [lein-bower "0.5.1"]
             [cider/cider-nrepl "0.8.1"]
             [lein-npm "0.6.1"]]
-  
+  :jar-exclusions [#".*\.edn"]
   :source-paths ["src/clj" "src/cljs"]
   :ring {:handler logging-dashboard.handler/app}
-  :profiles
-  {:dev {:dependencies [[javax.servlet/servlet-api "2.5"]
-                        [ring-mock "0.1.5"]]}}
+  :profiles {:dev {:dependencies [[javax.servlet/servlet-api "2.5"]
+                                  [ring-mock "0.1.5"]]}}
   :cljsbuild {:builds
               [{:source-paths ["src/cljs"]
                 :compiler {:output-dir "resources/public/js"
                            :output-to  "resources/public/js/logging-dashboard.js"
-                           :source-map "resources/public/js/logging-dashboard.js.map"
+                           ;:source-map "resources/public/js/logging-dashboard.js.map"
                            :closure-warnings {:non-standard-jsdoc :off}
-                           :optimizations :whitespace
+                           :optimizations :advanced
                            :externs ["externs.js"]
-                           :pretty-print true}}]})
+                           :pretty-print false}}]})
 
