@@ -33,7 +33,7 @@
                                                                                 (reset! columns (:columns new-state))
                                                                                 (reset! table-settings (:table-settings new-state))
                                                                                 (reset! query (:query new-state)))))
-      (add-watch config-store/config :header-logs (fn [_ _ _ new-state] (reset! logs new-state)))
+      (add-watch logs-store/logs :header-logs (fn [_ _ _ new-state] (reset! logs new-state)))
       [:nav.navbar.navbar-default.navbar-fixed-top
        [:div.container-fluid
         [:div.navbar-header

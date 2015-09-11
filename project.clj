@@ -38,7 +38,7 @@
               [{:source-paths ["src/cljs"]
                 :compiler {:output-dir "resources/public/js"
                            :output-to  "resources/public/js/logging-dashboard.js"
-                           ;:source-map "resources/public/js/logging-dashboard.js.map"
+                           :source-map "resources/public/js/logging-dashboard.js.map"
                            :closure-warnings {:non-standard-jsdoc :off}
                            :optimizations :advanced
                            :externs ["externs.js"]

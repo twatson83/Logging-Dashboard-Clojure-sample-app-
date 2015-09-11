@@ -3,7 +3,6 @@
   (:use [compojure.handler :only [site]]
         org.httpkit.server
         [taoensso.timbre :as timbre :refer (tracef debugf infof warnf errorf)]
-        [clojure.pprint :as pp]
         [logging-dashboard.users :only [check-ttl]]
         [logging-dashboard.handlers.logs :only [connect]]
         [logging-dashboard.routes :only [app-routes send-messages]]))
